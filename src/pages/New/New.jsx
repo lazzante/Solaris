@@ -48,7 +48,7 @@ const New = ({ inputs, title }) => {
               ))}
 
               <div className="formInput">
-                <button>Send</button>
+                <button className="saveButton">Save</button>
               </div>
             </form>
           </div>

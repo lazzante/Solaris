@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
+import logo from "./assets/solaris_logo2.png";
 
 const Login = () => {
   const [error, setError] = useState(false);
@@ -37,6 +38,7 @@ const Login = () => {
   return (
     <div className="login">
       <form onSubmit={handleLogin}>
+        <img src={logo}></img>
         <input
           type="email"
           placeholder="email"
@@ -56,12 +58,12 @@ const Login = () => {
           }}
         />
         {isLoading ? (
-          <span class="loader"></span>
+          <span className="loader" class="loader"></span>
         ) : (
           <button type="submit">Login</button>
         )}
 
-        {error && <span>Wrong email or password !</span>}
+        {error && <span className="error">Wrong email or password !</span>}
       </form>
     </div>
   );

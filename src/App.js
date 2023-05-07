@@ -1,13 +1,14 @@
-import "./App.css";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Homepage/Home";
 import List from "./pages/List/List";
 import New from "./pages/New/New";
 import Single from "./pages/Single/Single";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { productInputs, userInputs } from "./pages/New/formsource";
+import "./style/dark.scss";
+import { DarkModeContext } from "./context/darkModeContext";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -15,9 +16,10 @@ function App() {
   const RequireAuth = ({ children }) => {
     return currentUser ? children : <Navigate to="/login" />;
   };
+  const { darkMode } = useContext(DarkModeContext);
 
   return (
-    <div className="App">
+    <div className={darkMode ? "app dark" : "app"}>
       <BrowserRouter>
         <Routes>
           // "/" PATH
