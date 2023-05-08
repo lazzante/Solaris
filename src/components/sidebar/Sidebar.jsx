@@ -13,9 +13,28 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import RoomServiceIcon from "@mui/icons-material/RoomService";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
+  const { dispatch } = useContext(AuthContext);
+
+  const handleLogout = async () => {
+    await signOut(auth)
+      .then(() => {
+        dispatch({ type: "LOGOUT" });
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -90,7 +109,7 @@ const Sidebar = () => {
             <AccountBoxIcon className="icon" />
             <span>Profile</span>
           </li>
-          <li>
+          <li onClick={handleLogout}>
             <LogoutIcon className="icon" />
             <span>Logout</span>
           </li>

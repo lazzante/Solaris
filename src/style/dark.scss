@@ -1,7 +1,7 @@
 .app.dark {
   background-color: #111;
   color: #5bc2e7;
-
+  overflow-x: hidden;
   .chartGrid {
     stroke: rgba(228, 228, 228, 0.219);
   }
@@ -17,6 +17,7 @@
   .navbar {
     color: #5bc2e7;
     border-color: #333;
+    width: 98%;
 
     .search {
       border-color: #5bc2e7;

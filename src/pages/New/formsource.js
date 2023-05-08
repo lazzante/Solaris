@@ -7,9 +7,15 @@ export const userInputs = [
   },
   {
     id: "displayName",
-    label: "Name and surname",
+    label: "Name and Surname",
     type: "text",
     placeholder: "John Doe",
+  },
+  {
+    id: "age",
+    label: "Age",
+    type: "text",
+    placeholder: "18",
   },
   {
     id: "email",
@@ -27,6 +33,7 @@ export const userInputs = [
     id: "password",
     label: "Password",
     type: "password",
+    placeholder: "*******",
   },
   {
     id: "address",
@@ -34,11 +41,18 @@ export const userInputs = [
     type: "text",
     placeholder: "Elton St. 216 NewYork",
   },
+
   {
-    id: "country",
-    label: "Country",
+    id: "role",
+    label: "Role",
     type: "text",
-    placeholder: "USA",
+    placeholder: "Admin",
+  },
+  {
+    id: "status",
+    label: "Status",
+    type: "text",
+    placeholder: "Active",
   },
 ];
 

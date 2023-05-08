@@ -1,0 +1,17 @@
+.cantAccess {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #282c34;
+
+  .problem {
+    text-align: center !important;
+    align-items: center !important;
+    color: #5bc2e7;
+
+    .icon {
+      font-size: 180px;
+    }
+  }
+}
