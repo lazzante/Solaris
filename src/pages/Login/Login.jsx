@@ -76,7 +76,7 @@ const Login = () => {
           }}
         />
         {isLoading ? (
-          <span className="loader" class="loader"></span>
+          <span className="loader"></span>
         ) : (
           <button type="submit">Login</button>
         )}

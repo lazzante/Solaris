@@ -13,7 +13,8 @@ import CantAccess from "../Error/CantAccess";
 const Home = () => {
   const { currentUser } = useContext(AuthContext);
   const role = currentUser.role;
-  if (role === "Admin") {
+  //role===ADMIN olucak
+  if (!role) {
     return (
       <div className="home">
         <Sidebar />

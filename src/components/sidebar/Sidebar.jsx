@@ -10,14 +10,16 @@ import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import RoomServiceIcon from "@mui/icons-material/RoomService";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
+import SchoolIcon from "@mui/icons-material/School";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import TitleIcon from "@mui/icons-material/Title";
+import TheaterComedyIcon from "@mui/icons-material/TheaterComedy";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -52,43 +54,38 @@ const Sidebar = () => {
               <span>Dashboard</span>
             </li>
           </Link>
-          <p className="title">LISTS</p>
+          <p className="title">ADMIN</p>
           <Link to="/users" style={{ textDecoration: "none" }}>
             <li>
               <GroupIcon className="icon" />
               <span>Users</span>
             </li>
           </Link>
-          <Link to="/products" style={{ textDecoration: "none" }}>
+          <Link to="/roles" style={{ textDecoration: "none" }}>
             <li>
-              <ShoppingCartIcon className="icon" />
-              <span>Products</span>
+              <TheaterComedyIcon className="icon" />
+              <span>Roles</span>
             </li>
           </Link>
-          <li>
-            <RoomServiceIcon className="icon" />
-            <span>Orders</span>
-          </li>
-          <li>
-            <LocalShippingIcon className="icon" />
-            <span>Delivery</span>
-          </li>
-          <p className="title">USEFULL</p>
-          <Link to="/accounting" style={{ textDecoration: "none" }}>
+          <Link to="/titles" style={{ textDecoration: "none" }}>
             <li>
-              <PointOfSaleIcon className="icon" />
-              <span>Accounting</span>
+              <TitleIcon className="icon" />
+              <span>Titles</span>
+            </li>
+          </Link>
+          <Link to="/divisions" style={{ textDecoration: "none" }}>
+            <li>
+              <SchoolIcon className="icon" />
+              <span>Divisions</span>
+            </li>
+          </Link>
+          <Link to="/positions" style={{ textDecoration: "none" }}>
+            <li>
+              <AccessibilityNewIcon className="icon" />
+              <span>Positions</span>
             </li>
           </Link>
 
-          <li>
-            <QueryStatsIcon className="icon" />
-            <span>Stats</span>
-          </li>
-          <li>
-            <NotificationsIcon className="icon" />
-            <span>Notifications</span>
-          </li>
           <p className="title">SERVICE</p>
 
           <li>

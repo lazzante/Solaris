@@ -9,8 +9,10 @@ import MessageIcon from "@mui/icons-material/Message";
 import ListIcon from "@mui/icons-material/List";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 const Navbar = () => {
   const { dispatch } = useContext(DarkModeContext);
+  const navigate = useNavigate();
 
   return (
     <div className="navbar">
@@ -38,18 +40,17 @@ const Navbar = () => {
             <div className="counter">1</div>
           </div>
           <div className="item">
-            <MessageIcon className="icon" />
+            <MessageIcon
+              className="icon"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/chat");
+              }}
+            />
             <div className="counter">2</div>
           </div>
           <div className="item">
             <ListIcon className="icon" />
-          </div>
-          <div className="item">
-            <img
-              src="https://images.pexels.com/photos/5558237/pexels-photo-5558237.jpeg"
-              alt=""
-              className="avatar"
-            />
           </div>
         </div>
       </div>

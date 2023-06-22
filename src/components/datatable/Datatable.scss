@@ -5,8 +5,10 @@
   .datatableTitle {
     width: 100%;
     font-size: 24px;
-    color: gray;
-    margin-bottom: 10px;
+    color: #5bc2e7;
+    margin-bottom: 5px;
+    margin-top: 30px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -74,6 +76,50 @@
       color: crimson;
       border: 1px dotted rgba(220, 20, 60, 0.6);
       cursor: pointer;
+    }
+  }
+
+  .bottomUp {
+    display: flex;
+    .bottomLeft {
+      flex: 3;
+      .link {
+        text-decoration: none;
+        color: green;
+        font-size: 16px;
+        font-weight: 400;
+        border: 1px solid green;
+        padding: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    }
+
+    .bottomRight {
+      flex: 3;
+      margin-left: 2%;
+      .link {
+        text-decoration: none;
+        color: green;
+        font-size: 16px;
+        font-weight: 400;
+        border: 1px solid green;
+        padding: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .bottomDown {
+    display: flex;
+    margin-top: 6%;
+    .bottomDownLeft {
+      flex: 2;
+    }
+    .bottomDownRight {
+      flex: 2;
+      margin-left: 2%;
     }
   }
 }

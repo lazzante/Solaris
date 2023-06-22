@@ -10,11 +10,11 @@
       -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
       box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
       padding: 10px;
-      margin: 20px;
+      margin: 10px;
       display: flex;
 
       h1 {
-        color: lightgray;
+        color: #5bc2e7;
         font-size: 20px;
       }
 
@@ -36,11 +36,12 @@
         form {
           display: flex;
           flex-wrap: wrap;
-          gap: 30px;
+          gap: 20px;
           justify-content: space-around;
 
           .formInput {
-            width: 60%;
+            width: 50%;
+            margin-top: 20px;
 
             label {
               display: flex;
@@ -57,21 +58,23 @@
               padding: 5px;
               border: none;
               border-bottom: 1px solid gray;
+              font-size: 20px;
             }
           }
 
-          button {
-            width: 150px;
+          .saveButton {
+            margin-left: 35%;
+            width: 200px;
             padding: 10px;
             border: none;
             background-color: #5bc2e7;
             color: white;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 20px;
 
             &:disabled {
-              background-color: rgba(3, 92, 92, 0.322);
+              background-color: rgba(3, 92, 92, 0.345);
               cursor: not-allowed;
             }
           }
