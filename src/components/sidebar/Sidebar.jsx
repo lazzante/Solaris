@@ -20,6 +20,8 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import TitleIcon from "@mui/icons-material/Title";
 import TheaterComedyIcon from "@mui/icons-material/TheaterComedy";
+import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
+import BiotechIcon from "@mui/icons-material/Biotech";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -54,6 +56,25 @@ const Sidebar = () => {
               <span>Dashboard</span>
             </li>
           </Link>
+          <Link to="/logs" style={{ textDecoration: "none" }}>
+            <li>
+              <TextSnippetIcon className="icon" />
+              <span>Logs</span>
+            </li>
+          </Link>
+          <Link to="/equipments" style={{ textDecoration: "none" }}>
+            <li>
+              <PrecisionManufacturingIcon className="icon" />
+              <span>Equipments</span>
+            </li>
+          </Link>
+          <Link to="/labratories" style={{ textDecoration: "none" }}>
+            <li>
+              <BiotechIcon className="icon" />
+              <span>Labratories</span>
+            </li>
+          </Link>
+
           <p className="title">ADMIN</p>
           <Link to="/users" style={{ textDecoration: "none" }}>
             <li>
@@ -92,10 +113,7 @@ const Sidebar = () => {
             <HealthAndSafetyIcon className="icon" />
             <span>System Health </span>
           </li>
-          <li>
-            <TextSnippetIcon className="icon" />
-            <span>Logs</span>
-          </li>
+
           <li>
             <SettingsIcon className="icon" />
             <span>Settings</span>

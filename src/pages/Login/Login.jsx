@@ -1,11 +1,13 @@
 import React, { useState, useContext } from "react";
 import "./Login.scss";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../../firebase";
+import { auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import logo from "./assets/solaris_logo2.png";
-import { doc, getDoc } from "firebase/firestore";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { detailSetter } from "../../Redux/userDetailSlice";
 
 const Login = () => {
   const [error, setError] = useState(false);
@@ -13,17 +15,22 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  //REDUX
+  const dispatch1 = useDispatch();
+
   const navigate = useNavigate();
 
   const { dispatch } = useContext(AuthContext);
 
-  const findUserDetails = async (id) => {
+  //I THİNK OLD CODE FROM FİRESBASE BACKEND--------------------------------------------------------------------------
+  /*const findUserDetails = async (id) => {
     try {
       const userRef = doc(db, "users", id);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         console.log("User data:", userSnap.data());
         const userDetail = userSnap.data();
+        //FİREBASE AUTHENTİCATİON İÇİN GEREKLİ
         dispatch({ type: "LOGIN", payload: userDetail });
       } else {
         console.log("No such user!");
@@ -31,7 +38,21 @@ const Login = () => {
     } catch (error) {
       console.log("User Details Can't Found !");
     }
-  };
+  };*/
+  //---------------------------------------------------------------------------------------------------------------
+
+  //GET USER FROM JAVA BACKEND
+  async function getUserDetails(uid) {
+    try {
+      axios.get(`http://localhost:8080/user/uid/${uid}`).then((details) => {
+        console.log("Data From Backend: ", details.data);
+        //REDUX
+        dispatch1(detailSetter(details.data));
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -39,7 +60,7 @@ const Login = () => {
     setError(false);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        findUserDetails(userCredential.user.uid);
+        getUserDetails(userCredential.user.uid);
         setIsLoading(false);
         const user = userCredential.user;
         dispatch({ type: "LOGIN", payload: user });
@@ -52,6 +73,8 @@ const Login = () => {
         setError(error);
       });
   };
+
+ 
 
   return (
     <div className="login">

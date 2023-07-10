@@ -18,6 +18,7 @@ export default function New({ inputs, title }) {
   const [selectedTitle, setSelectedTitle] = useState([{}]);
   const [selectedPosition, setSelectedPosition] = useState([]);
   const [selectedDivision, setSelectedDivision] = useState([]);
+  
   //FETCH AREAS
   const [roles, setRoles] = useState([]);
   const [titles, setTitles] = useState([]);

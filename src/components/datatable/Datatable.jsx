@@ -14,9 +14,14 @@ import { useDispatch } from "react-redux";
 import { changeUserId } from "../../Redux/userIdSlice";
 import axios from "axios";
 import New from "../../pages/New/New";
+import { useSelector } from "react-redux";
+import { detail } from "../../Redux/userDetailSlice";
+import CantAccess from "../../pages/Error/CantAccess";
+import Cookies from "js-cookie";
 
 //USERS TABLE
 const Datatable = () => {
+
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const navigate = useNavigate();
@@ -26,29 +31,37 @@ const Datatable = () => {
   const [positionData, setPositionData] = useState([]);
   const [authorityData, setAuthority] = useState([]);
 
+  //SAYFAYA GİRİŞ YETKİSİ VARMI KONTROL EDEN USESTATE
+  const [hasAuthority, setHasAuthority] = useState();
+
   let allUsers;
+  const userRoles = useSelector((state)=>state.detailSetter.value.authorities);
+  let roleNames;
+
+  
 
   useEffect(() => {
+    roleNames=userRoles.map(role=>role.name);
+    console.log("UserRoles : ",roleNames);
+
+    userRoles.map(role=>{(role.name==="ADMIN")?setHasAuthority(true):setHasAuthority(false)})
     const fetchData = async () => {
-      let list = [];
+            let list = [];
       const getAllUsers = await axios
         .get("http://localhost:8080/user/getAll")
         .then((response) => {
           setData(response.data);
-          console.log(response.data);
-
           setAuthority(response.data.authorities);
         })
         .catch((err) => console.log(err));
     };
 
     fetchData();
-  }, []);
+  },[]);
 
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(`http://localhost:8080/user/delete/${id}`);
-
       setData(data.filter((item) => item.id !== id));
     } catch (error) {
       console.log(error);
@@ -144,30 +157,35 @@ const Datatable = () => {
     }
     return retVal;
   }
-
-  return (
-    <div className="datatable">
-      <div className="datatableTitle">
-        <div>Users</div>
-        <Link to="/users/new" className="link">
-          Add New
-        </Link>
-      </div>
-      <DataGrid
-        className="datagrid"
-        rows={data}
-        columns={columns.concat(actionColumn)}
-        getRowId={(row: any) => generateRandom()}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-      />
-    </div>
-  );
+  {
+   {
+    
+    return (
+      (hasAuthority===true)?
+      <div className="datatable">
+        <div className="datatableTitle">
+          <div>Users</div>
+          <Link to="/users/new" className="link">
+            Add New
+          </Link>
+        </div>
+        <DataGrid
+          className="datagrid"
+          rows={data}
+          columns={columns.concat(actionColumn)}
+          getRowId={(row: any) => generateRandom()}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+        />
+      </div>:<CantAccess/>
+    );
+   }
+    
+  }
 };
-
 export default Datatable;

@@ -9,11 +9,17 @@ import {
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import CantAccess from "../Error/CantAccess";
+
 
 const Divisions = () => {
   const [divisionsData, setDivisionsData] = useState([]);
 
+
+
   useEffect(() => {
+
     const fetchData = async () => {
       let list = [];
       const getAllDivisions = await axios
@@ -69,6 +75,7 @@ const Divisions = () => {
   }
 
   return (
+   
     <div className="list">
       <Sidebar />
       <div className="listContainer">

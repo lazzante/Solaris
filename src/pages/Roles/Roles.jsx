@@ -20,7 +20,6 @@ const Roles = () => {
         .then((response) => {
           allRoles = response.data;
           setRolesData(allRoles);
-          console.log(allRoles);
         })
         .catch((err) => console.log(err));
     };

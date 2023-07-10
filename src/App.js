@@ -18,10 +18,18 @@ import { roleInputs } from "./pages/Roles/inputs";
 import { titleInputs } from "./pages/Titles/inputs";
 import { divisionInputs } from "./pages/Divisions/inputs";
 import { positionInputs } from "./pages/Positions/inputs";
+import { logInputs } from "./pages/Logs/inputs";
 import NewRole from "./pages/Roles/NewRole";
 import NewTitle from "./pages/Titles/NewTitle";
 import NewDivision from "./pages/Divisions/NewDivision";
 import NewPosition from "./pages/Positions/NewPosition";
+import Logs from "./pages/Logs/Logs";
+import NewLog from "./pages/Logs/NewLog";
+import Equipments from "./pages/Equipments/Equipments";
+import NewEquipment from "./pages/Equipments/NewEquipment";
+import Labratories from "./pages/Labratories/Labratories";
+import NewLabratory from "./pages/Labratories/NewLabratory";
+
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -159,6 +167,40 @@ function App() {
                     inputs={positionInputs}
                     title="Add New Position"
                   />
+                </RequireAuth>
+              }
+            />
+          </Route>
+          //LOGS
+          <Route path="logs">
+            <Route index element={<Logs />} />
+            <Route
+              path="newLog"
+              element={
+                <RequireAuth>
+                  <NewLog inputs={logInputs} title="Add New Log" />
+                </RequireAuth>
+              }
+            />
+          </Route>
+          <Route path="equipments">
+            <Route index element={<Equipments />} />
+            <Route
+              path="newEquipment"
+              element={
+                <RequireAuth>
+                  <NewEquipment title="Add New Equipment" />
+                </RequireAuth>
+              }
+            />
+          </Route>
+          <Route path="labratories">
+            <Route index element={<Labratories />} />
+            <Route
+              path="newLabratory"
+              element={
+                <RequireAuth>
+                  <NewLabratory title="Add New Labratory" />
                 </RequireAuth>
               }
             />
