@@ -29,6 +29,7 @@ import Equipments from "./pages/Equipments/Equipments";
 import NewEquipment from "./pages/Equipments/NewEquipment";
 import Labratories from "./pages/Labratories/Labratories";
 import NewLabratory from "./pages/Labratories/NewLabratory";
+import EquipmentAuth from "./pages/EqAuth/EquipmentAuth";
 
 
 function App() {
@@ -198,6 +199,17 @@ function App() {
             <Route index element={<Labratories />} />
             <Route
               path="newLabratory"
+              element={
+                <RequireAuth>
+                  <NewLabratory title="Add New Labratory" />
+                </RequireAuth>
+              }
+            />
+          </Route>
+          <Route path="equipmentAuth">
+            <Route index element={<EquipmentAuth />} />
+            <Route
+              path=""
               element={
                 <RequireAuth>
                   <NewLabratory title="Add New Labratory" />

@@ -1,16 +1,15 @@
 import "./Divisions.scss";
 import { React, useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   divisionColumns,
-  positionColumns,
 } from "../../components/datatable/datatablesource";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
-import { useSelector } from "react-redux";
-import CantAccess from "../Error/CantAccess";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
 
 
 const Divisions = () => {
@@ -56,7 +55,7 @@ const Divisions = () => {
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            Delete
+            <DeleteForeverIcon/>
           </div>
         </div>
       );

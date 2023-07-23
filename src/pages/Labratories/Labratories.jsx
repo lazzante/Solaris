@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
 
 const Labratories = () => {
   const [labratoryData, setLabratoryData] = useState([]);
@@ -48,7 +50,7 @@ const Labratories = () => {
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            Delete
+            <DeleteForeverIcon/>
           </div>
         </div>
       );

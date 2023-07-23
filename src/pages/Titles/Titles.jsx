@@ -9,6 +9,8 @@ import {
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
 
 const Titles = () => {
   const [titlesData, setTitlesData] = useState([]);
@@ -42,7 +44,7 @@ const Titles = () => {
             onClick={() => handleDelete(params.row.id)}
             className="deleteButton"
           >
-            Delete
+            <DeleteForeverIcon/>
           </div>
         </div>
       );

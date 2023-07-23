@@ -18,12 +18,14 @@ export default function New({ inputs, title }) {
   const [selectedTitle, setSelectedTitle] = useState([{}]);
   const [selectedPosition, setSelectedPosition] = useState([]);
   const [selectedDivision, setSelectedDivision] = useState([]);
+  const [selectedEquipments,setSelectedEquipments] = useState([]);
   
   //FETCH AREAS
   const [roles, setRoles] = useState([]);
   const [titles, setTitles] = useState([]);
   const [positions, setPositions] = useState([]);
   const [divisions, setDivisions] = useState([]);
+  const [equipments,setEquipments] = useState([]);
   const navigate = useNavigate();
   const theme = useTheme();
 
@@ -32,6 +34,7 @@ export default function New({ inputs, title }) {
     getTitles();
     getDivisions();
     getPositions();
+    getEquipments();
   }, []);
 
   const getRoles = async () => {
@@ -68,6 +71,14 @@ export default function New({ inputs, title }) {
       })
       .catch((err) => console.log(err));
   };
+  const getEquipments = async () => {
+    await axios
+      .get("http://localhost:8080/equipment/getAll")
+      .then((response) => {
+        setEquipments(response.data);
+      })
+      .catch((err) => console.log(err));
+  };
 
   //TEXT INPUTS
   const handleInput = (e) => {
@@ -87,17 +98,7 @@ export default function New({ inputs, title }) {
       );
       console.log("USER SAVED IN FİREBASE NEXT STEP IS DB");
 
-      //TEST POST DATA
-      // console.log(`USERNAME:${data.username} , PASSWORD:${
-      //   data.password
-      // } , EMAİL:${data.email}
-      // , FİRSTNAME:${data.firstname} , LASTNAME:${
-      //   data.lastname
-      // } , AUTHORITIES:${selectedRole.map((role) =>
-      //   console.log(`ROLE NAME :${role.name} ,ROLE ID:${role.id} `)
-      // )}`);
-
-      //----------------------------------------------
+      //AXIOS
       const axRes = await axios
         .post("http://localhost:8080/signUp", {
           username: data.username,
@@ -132,6 +133,11 @@ export default function New({ inputs, title }) {
               short_name: selectedDivision.short_name,
             },
           ],
+          equipments: selectedEquipments.map((eq) => ({
+            id: eq.id,
+            name: eq.name, 
+          })),
+          
         })
         .then((res) => {
           console.log("Başarılı bir şekilde tamamlandı");
@@ -147,23 +153,24 @@ export default function New({ inputs, title }) {
     }
   };
 
+  const onEquipmentsChange = (event, values) => {
+    setSelectedEquipments(values);
+    console.log("SELECTED EQUIPMENTS (onEqChange incoming value): ",values)
+  };
   const onTagsChange = (event, values) => {
     setSelectedRole(values);
   };
 
   const onTitleTagsChange = (event, values) => {
     setSelectedTitle(values);
-    console.log(selectedTitle);
   };
 
   const onPositionTagsChange = (event, values) => {
     setSelectedPosition(values);
-    console.log(values);
   };
 
   const onDivisionTagsChange = (event, values) => {
     setSelectedDivision(values);
-    console.log(values);
   };
   return (
     <div className="new">
@@ -252,6 +259,25 @@ export default function New({ inputs, title }) {
                         {...params}
                         label="Select Roles"
                         placeholder="Favorites"
+                      />
+                    )}
+                  />
+                </Stack>
+              </div>
+              <div className="formInput">
+                <Stack spacing={3} sx={{ minWidth: 120 }}>
+                  <Autocomplete
+                    multiple
+                    id="tags-outlined"
+                    options={equipments}
+                    getOptionLabel={(option) => option.name}
+                    filterSelectedOptions
+                    onChange={onEquipmentsChange}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select Equipments"
+                        placeholder="Equipments"
                       />
                     )}
                   />

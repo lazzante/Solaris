@@ -50,3 +50,9 @@ export const roleColumns = [
   { field: "id", headerName: "ID", width: 50 },
   { field: "name", headerName: "Name", width: 150 },
 ];
+
+export const eqAuthColumns = [
+  { field: "id", headerName: "ID", width: 50 },
+  
+
+]

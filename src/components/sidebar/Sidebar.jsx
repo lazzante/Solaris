@@ -1,6 +1,6 @@
 import "./Sidebar.scss";
 import React from "react";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from "@mui/icons-material/Group";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
@@ -22,6 +22,7 @@ import TitleIcon from "@mui/icons-material/Title";
 import TheaterComedyIcon from "@mui/icons-material/TheaterComedy";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import BiotechIcon from "@mui/icons-material/Biotech";
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -52,8 +53,8 @@ const Sidebar = () => {
           <p className="title">MAIN</p>
           <Link to="/" style={{ textDecoration: "none" }}>
             <li>
-              <DashboardIcon className="icon" />
-              <span>Dashboard</span>
+              <HomeIcon className="icon" />
+              <span>Homepage</span>
             </li>
           </Link>
           <Link to="/logs" style={{ textDecoration: "none" }}>
@@ -74,6 +75,7 @@ const Sidebar = () => {
               <span>Labratories</span>
             </li>
           </Link>
+         
 
           <p className="title">ADMIN</p>
           <Link to="/users" style={{ textDecoration: "none" }}>
@@ -82,6 +84,13 @@ const Sidebar = () => {
               <span>Users</span>
             </li>
           </Link>
+          <Link to="/equipmentAuth" style={{ textDecoration: "none" }}>
+            <li>
+              <ManageAccountsIcon className="icon" />
+              <span>Equipment Authorization</span>
+            </li>
+          </Link>
+
           <Link to="/roles" style={{ textDecoration: "none" }}>
             <li>
               <TheaterComedyIcon className="icon" />
@@ -106,6 +115,7 @@ const Sidebar = () => {
               <span>Positions</span>
             </li>
           </Link>
+         
 
           <p className="title">SERVICE</p>
 
