@@ -45,9 +45,13 @@ const Login = () => {
   async function getUserDetails(uid) {
     try {
       axios.get(`http://localhost:8080/user/uid/${uid}`).then((details) => {
-        console.log("Data From Backend: ", details.data);
         //REDUX
-        dispatch1(detailSetter(details.data));
+        if (details.data.authorities) {
+          dispatch1(detailSetter(details.data));
+          console.log("Giriyormu aceb");
+        } else {
+          dispatch1(detailSetter(""));
+        }
       });
     } catch (error) {
       console.log(error.message);
@@ -73,8 +77,6 @@ const Login = () => {
         setError(error);
       });
   };
-
- 
 
   return (
     <div className="login">

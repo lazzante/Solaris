@@ -5,8 +5,7 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
 import "./Logs.scss";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const Logs = () => {
   const [logsData, setLogsData] = useState([]);
@@ -19,9 +18,7 @@ const Logs = () => {
       const getAllLogs = await axios
         .get("http://localhost:8080/log/getAll")
         .then((response) => {
-          console.log("RESPO",response);
           setLogsData(response.data);
-          console.log(allLogs);
         })
         .catch((err) => console.log(err));
     };
@@ -50,7 +47,7 @@ const Logs = () => {
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            <DeleteForeverIcon/>
+            <DeleteForeverIcon />
           </div>
         </div>
       );

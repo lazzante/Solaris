@@ -1,6 +1,6 @@
 import "./Sidebar.scss";
 import React from "react";
-import HomeIcon from '@mui/icons-material/Home';
+import HomeIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
@@ -22,7 +22,8 @@ import TitleIcon from "@mui/icons-material/Title";
 import TheaterComedyIcon from "@mui/icons-material/TheaterComedy";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import BiotechIcon from "@mui/icons-material/Biotech";
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -72,10 +73,9 @@ const Sidebar = () => {
           <Link to="/labratories" style={{ textDecoration: "none" }}>
             <li>
               <BiotechIcon className="icon" />
-              <span>Labratories</span>
+              <span>Laboratories</span>
             </li>
           </Link>
-         
 
           <p className="title">ADMIN</p>
           <Link to="/users" style={{ textDecoration: "none" }}>
@@ -84,6 +84,13 @@ const Sidebar = () => {
               <span>Users</span>
             </li>
           </Link>
+          <Link to="/projects" style={{ textDecoration: "none" }}>
+            <li>
+              <AssignmentIcon className="icon" />
+              <span>Projects</span>
+            </li>
+          </Link>
+
           <Link to="/equipmentAuth" style={{ textDecoration: "none" }}>
             <li>
               <ManageAccountsIcon className="icon" />
@@ -115,7 +122,6 @@ const Sidebar = () => {
               <span>Positions</span>
             </li>
           </Link>
-         
 
           <p className="title">SERVICE</p>
 

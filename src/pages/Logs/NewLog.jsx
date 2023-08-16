@@ -6,6 +6,8 @@ import axios from "axios";
 import { useTheme } from "@mui/material/styles";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import { async } from "@firebase/util";
+import { fontSize } from "@mui/system";
 
 const NewLog = ({ inputs, title }) => {
   const [log, setLog] = useState("");
@@ -13,7 +15,7 @@ const NewLog = ({ inputs, title }) => {
   const [time, setTime] = useState("");
   const [operation, setOperation] = useState("");
   const [user, setUser] = useState("");
-  const [purposeOfOperation, setPurposeOfOperation] = useState("");
+  const [purposeOfOperations, setPurposeOfOperations] = useState([]);
   const [projectCode, setProjectCode] = useState("");
   const [usageDuration, setUsageDuration] = useState("");
   const [usageMode, setUsageMode] = useState("");
@@ -28,19 +30,51 @@ const NewLog = ({ inputs, title }) => {
   const [titles, setTitles] = useState([]);
   const [positions, setPositions] = useState([]);
   const [divisions, setDivisions] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [projectsByType, setProjectByType] = useState([]);
 
   //SELECTED
   const [selectedTitle, setSelectedTitle] = useState([{}]);
   const [selectedPosition, setSelectedPosition] = useState([]);
   const [selectedDivision, setSelectedDivision] = useState([]);
   const [selectedEquipment, setSelectedEquipment] = useState([]);
+  const [selectedPurposeOfOperaiton, setSelectedPurposeOfOperation] = useState(
+    []
+  );
+  const [selectedProject, setSelectedProject] = useState([]);
 
   useEffect(() => {
     getEquipments();
     getTitles();
     getDivisions();
     getPositions();
+    getAllProjects();
   }, []);
+
+  const getProjectsByProjectType = (type) => {
+    let items = [];
+    console.log("hoho", type);
+
+    projects.map((project) => {
+      project.projectType === type && items.push(project);
+    });
+    setProjectByType(items);
+    console.log("Items", items);
+  };
+
+  const getAllProjects = async () => {
+    await axios
+      .get("http://localhost:8080/project/getAll")
+      .then((response) => {
+        setProjects(response.data);
+        let projectTypeData = [];
+        response.data.map((project) =>
+          projectTypeData.push(project.projectType)
+        );
+        setPurposeOfOperations(projectTypeData);
+      })
+      .catch((err) => console.log(err));
+  };
 
   const getEquipments = async () => {
     await axios
@@ -56,7 +90,6 @@ const NewLog = ({ inputs, title }) => {
       .get("http://localhost:8080/title/getAll")
       .then((response) => {
         setTitles(response.data);
-        console.log(response);
       })
       .catch((err) => console.log(err));
   };
@@ -85,7 +118,7 @@ const NewLog = ({ inputs, title }) => {
         time: time,
         operation: operation,
         projectUser: user,
-        purposeOfOperation: purposeOfOperation,
+        purposeOfOperation: selectedPurposeOfOperaiton,
         projectCode: projectCode,
         usageDuration: usageDuration,
         usageMode: usageMode,
@@ -147,6 +180,14 @@ const NewLog = ({ inputs, title }) => {
   const onDivisionTagsChange = (event, values) => {
     setSelectedDivision(values);
   };
+  const onPurposeOfOperationChanges = (event, values) => {
+    setSelectedPurposeOfOperation(values);
+    getProjectsByProjectType(values);
+  };
+  const onProjectsByTypeChanged = (event, values) => {
+    setSelectedProject(values);
+  };
+
   return (
     <div className="new">
       <Sidebar />
@@ -158,6 +199,39 @@ const NewLog = ({ inputs, title }) => {
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleAdd}>
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={purposeOfOperations}
+                  sx={{ minWidth: 120 }}
+                  onChange={onPurposeOfOperationChanges}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Purpose Of Operation"
+                      value={selectedPurposeOfOperaiton}
+                    />
+                  )}
+                />
+              </div>
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={projectsByType}
+                  getOptionLabel={(option) => option.projectName}
+                  sx={{ minWidth: 120 }}
+                  onChange={onProjectsByTypeChanged}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Projects"
+                      value={selectedProject}
+                    />
+                  )}
+                />
+              </div>
               <div className="formInput">
                 <Autocomplete
                   disablePortal
@@ -234,16 +308,7 @@ const NewLog = ({ inputs, title }) => {
                   onChange={(e) => setUser(e.target.value)}
                 />
               </div>
-              <div className="formInput">
-                <label>Purpose Of Operation</label>
-                <input
-                  id="purposeOfOperation"
-                  type="text"
-                  placeholder="Project"
-                  value={purposeOfOperation}
-                  onChange={(e) => setPurposeOfOperation(e.target.value)}
-                />
-              </div>
+
               <div className="formInput">
                 <label>Project Code</label>
                 <input

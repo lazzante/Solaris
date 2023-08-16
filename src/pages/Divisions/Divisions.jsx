@@ -2,30 +2,22 @@ import "./Divisions.scss";
 import { React, useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
-import {
-  divisionColumns,
-} from "../../components/datatable/datatablesource";
+import { divisionColumns } from "../../components/datatable/datatablesource";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
-
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const Divisions = () => {
   const [divisionsData, setDivisionsData] = useState([]);
 
-
-
   useEffect(() => {
-
     const fetchData = async () => {
       let list = [];
       const getAllDivisions = await axios
         .get("http://localhost:8080/division/getAll")
         .then((response) => {
           setDivisionsData(response.data);
-          console.log(response);
         })
         .catch((err) => console.log(err));
     };
@@ -55,7 +47,7 @@ const Divisions = () => {
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            <DeleteForeverIcon/>
+            <DeleteForeverIcon />
           </div>
         </div>
       );
@@ -74,7 +66,6 @@ const Divisions = () => {
   }
 
   return (
-   
     <div className="list">
       <Sidebar />
       <div className="listContainer">

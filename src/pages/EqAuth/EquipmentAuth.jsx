@@ -6,14 +6,19 @@ import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-import { CSVLink } from "react-csv";
-import CancelIcon from "@mui/icons-material/Cancel";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import { GridToolbarExport } from "@mui/x-data-grid";
 import { async } from "@firebase/util";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import EditIcon from "@mui/icons-material/Edit";
+import AlertDialog from "./AlertDialog";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const EquipmentAuth = () => {
   useEffect(() => {
@@ -47,6 +52,7 @@ const EquipmentAuth = () => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedEq, setSelectedEq] = useState({});
   const [selectedUserType, setSelectedUserType] = useState("");
+  const [selectedDivision, setSelectedDivision] = useState("");
 
   //CSV OBJECT
   const [csvObject, setCsvObject] = useState([]);
@@ -56,6 +62,15 @@ const EquipmentAuth = () => {
     useState([]);
   const [exportAreaUserType, setExportAreaUserType] = useState("");
   const [exportAreaDivision, setExportAreaDivision] = useState([]);
+
+  const [isOk, setIsOk] = useState(false);
+
+  //CELL
+  const [isCellSelected, setIsCellClicked] = useState(false);
+  const [selectedRow, setSelectedRow] = useState({});
+  //DIALOG
+  const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -92,12 +107,18 @@ const EquipmentAuth = () => {
   };
 
   //GET EQUIPMENTS
-  const getEquipments = async () => {
+  const getEquipments = async (divisionName) => {
+    let equipments = [];
     const getAllEquipments = await axios
       .get("http://localhost:8080/equipment/getAll")
       .then((response) => {
-        setEquipments(response.data);
-        console.log("EQUİPMENT DATA :" + response.data);
+        response.data.map((equipment) => {
+          equipment.equipmentDivisions.map((division) => {
+            division.name === divisionName && equipments.push(equipment);
+          });
+        });
+
+        setEquipments(equipments);
       })
       .catch((err) => console.log(err));
   };
@@ -115,12 +136,19 @@ const EquipmentAuth = () => {
   //TABLE COLUMNS
   const columns = [
     {
+      field: "division",
+      headerName: "Division",
+      width: 200,
+      renderHeader: () => <strong>{"Division "}</strong>,
+    },
+    {
       field: `equipment`,
       valueGetter: (params) => {
         return `${params.row.equipment.name}`;
       },
       headerName: "Equipment",
       width: 200,
+      renderHeader: () => <strong>{"Equipment "}</strong>,
     },
     {
       field: `user`,
@@ -129,9 +157,28 @@ const EquipmentAuth = () => {
       },
       headerName: "User",
       width: 200,
+      renderHeader: () => <strong>{"User"}</strong>,
     },
-    { field: "userType", headerName: "User Type", width: 100 },
-    { field: "status", headerName: "Status", width: 100 },
+    {
+      field: "userType",
+      headerName: "User Type",
+      width: 100,
+      renderHeader: () => <strong>{"User Type "}</strong>,
+    },
+
+    {
+      field: "authdate",
+      headerName: "Authenticated Date",
+      width: 200,
+      renderHeader: () => <strong>{"Authenticated Date "}</strong>,
+    },
+
+    {
+      field: "status",
+      headerName: "Status",
+      renderHeader: () => <strong>{"Status "}</strong>,
+      width: 100,
+    },
   ];
 
   //-----------------------------------------------------------------------------ADD AREA-----------------------------------------------------------------------------
@@ -151,6 +198,12 @@ const EquipmentAuth = () => {
     } else {
       console.log("LEVEL NULL GİRİLDİ");
       setSelectedUserType("K");
+    }
+  };
+  const onDivisionChange = (event, value) => {
+    if (value !== null) {
+      setSelectedDivision(value.name);
+      getEquipments(value.name);
     }
   };
 
@@ -176,11 +229,16 @@ const EquipmentAuth = () => {
   };
 
   const handleAdd = async (e) => {
+    let suAn = new Date();
+    let suAnDateString = suAn.toDateString();
+
     e.preventDefault();
     const res = await axios
       .post("http://localhost:8080/equser/add", {
         userType: selectedUserType,
         status: selectedStatus,
+        authdate: suAnDateString,
+        division: selectedDivision,
         user: {
           id: selectedUser,
         },
@@ -190,7 +248,7 @@ const EquipmentAuth = () => {
       })
       .then((res) => {
         console.log("Başarılı bir şekilde tamamlandı");
-        console.log("RES:", res);
+        console.log("AuthDate Tipi:", suAnDateString);
         getAllEqUsers();
         setAddNew(false);
       })
@@ -199,7 +257,111 @@ const EquipmentAuth = () => {
         console.log(error.message);
       });
   };
+  //-----------------------------------------------------------------------------CELL AREA-----------------------------------------------------------------------------
+  const [message, setMessage] = useState("");
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const makeActive = async () => {
+    setIsLoading(true);
+    console.log("ORGINAL ROW", selectedRow);
+
+    const id = selectedRow.id;
+
+    const res = await axios
+      .post(`http://localhost:8080/equser/update/${id}`, {
+        userType: selectedRow.userType,
+        status: "ACTIVE",
+        authdate: selectedRow.authdate,
+        division: selectedRow.authdate,
+        user: {
+          id: selectedRow.user.id,
+        },
+        equipment: {
+          id: selectedRow.equipment.id,
+        },
+      })
+      .then((res) => {
+        console.log("Başarılı bir şekilde tamamlandı");
+        getAllEqUsers();
+        setIsOk(true);
+        handleClose();
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log("Başarısız");
+        console.log(error.message);
+      });
+  };
+  const makeInactive = async () => {
+    setIsLoading(true);
+
+    console.log("ORGINAL ROW", selectedRow);
+
+    const id = selectedRow.id;
+
+    const res = await axios
+      .post(`http://localhost:8080/equser/update/${id}`, {
+        userType: selectedRow.userType,
+        status: "INACTIVE",
+        authdate: selectedRow.authdate,
+        division: selectedRow.authdate,
+        user: {
+          id: selectedRow.user.id,
+        },
+        equipment: {
+          id: selectedRow.equipment.id,
+        },
+      })
+      .then((res) => {
+        console.log("Başarılı bir şekilde tamamlandı");
+        getAllEqUsers();
+        setIsOk(true);
+        handleClose();
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log("Başarısız");
+        console.log(error.message);
+      });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const actionColumn = {
+    field: "action",
+    headerName: "Action",
+    width: 200,
+    renderHeader: () => <strong>{"Action "}</strong>,
+    renderCell: (params) => {
+      return (
+        <div className="cellAction">
+          <div
+            className="viewButton"
+            onClick={(e) => {
+              e.preventDefault();
+              setOpen(true);
+              setSelectedRow(params.row);
+              // handleUserId(params.row.id);
+            }}
+          >
+            Change Status
+          </div>
+        </div>
+      );
+    },
+  };
+
+  //IF ROW CLICKED
+  const handleRowClick = (params) => {
+    // setMessage(
+    //   `Selected User-> ${params.row.user.firstname} ${params.row.user.lastname} `
+    // );
+    // console.log(params.row);
+  };
   //-----------------------------------------------------------------------------EXPORT OPTIONS AREA-----------------------------------------------------------------------------
 
   const onExportOptionsEquipmentChanged = (event, value) => {
@@ -215,25 +377,58 @@ const EquipmentAuth = () => {
     setExportAreaDivision(value.name);
   };
 
-  //-----------------------------------------------------------------------------EXPORT AREA-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------UPDATE AREA-----------------------------------------------------------------------------
+  const onStatusCellEditActive = async (originalRow) => {
+    const id = originalRow.id;
+    console.log("ORGINAL ROW", originalRow);
 
-  const downloadCsv = async () => {
-    const getAllUsers = await axios
-      .get("http://localhost:8080/equser/getAll")
-      .then((response) => {
-        const resData = response.data;
-        let data = [];
-        resData.map((item) => {
-          let object = {
-            Equipment: item.equipment.name,
-            User: item.user.firstname + " " + item.user.lastname,
-          };
-          data.push(object);
-          console.log(object);
-        });
-        setCsvObject(data);
+    const res = await axios
+      .post(`http://localhost:8080/equser/update/${id}`, {
+        userType: originalRow.userType,
+        status: "ACTIVE",
+        authdate: originalRow.authdate,
+        division: originalRow.authdate,
+        user: {
+          id: originalRow.user.id,
+        },
+        equipment: {
+          id: originalRow.equipment.id,
+        },
       })
-      .catch((err) => console.log(err));
+      .then((res) => {
+        console.log("Başarılı bir şekilde tamamlandı");
+        getAllEqUsers();
+        setIsOk(true);
+      })
+      .catch((error) => {
+        console.log("Başarısız");
+        console.log(error.message);
+      });
+  };
+  const onStatusCellEditInActive = async (originalRow) => {
+    const id = originalRow.id;
+    const res = await axios
+      .post(`http://localhost:8080/equser/update/${id}`, {
+        userType: originalRow.userType,
+        status: "INACTIVE",
+        authdate: originalRow.authdate,
+        division: originalRow.authdate,
+        user: {
+          id: originalRow.user.id,
+        },
+        equipment: {
+          id: originalRow.equipment.id,
+        },
+      })
+      .then((res) => {
+        console.log("Başarılı bir şekilde tamamlandı");
+        getAllEqUsers();
+        setIsOk(true);
+      })
+      .catch((error) => {
+        console.log("Başarısız");
+        console.log(error.message);
+      });
   };
 
   const exportHandle = () => {
@@ -261,6 +456,7 @@ const EquipmentAuth = () => {
         Equipment: item.equipment.name,
         UserType: item.userType,
         User: item.user.firstname + " " + item.user.lastname,
+        AuthenticateDate: item.authdate,
       };
       data.push(object);
     });
@@ -270,7 +466,9 @@ const EquipmentAuth = () => {
   };
 
   //----------------------------------------------------------------------------------------------------------------------------------------------------------
-
+  function CustomToolbar() {
+    return <GridToolbarExport />;
+  }
   {
     return !addNew ? (
       <div>
@@ -281,127 +479,81 @@ const EquipmentAuth = () => {
             <div className="dataTable">
               <div className="datatableTitle">
                 Equipment Authorization
-                <div>
-                  {!isExportOptionsClicked ? (
-                    <div
-                      className="exportOptions"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setExportAreaDivision("");
-                        setExportAreaSelectedEquipment("");
-                        setExportAreaUserType("");
-                        getEquipments();
-                        getDivisions();
-                        setIsExportOptionsClicked(true);
-                      }}
-                    >
-                      Export Options
-                    </div>
-                  ) : (
-                    <div className="exportOptionsOpened">
-                      <div className="singleOption">
-                        {" "}
-                        <Autocomplete
-                          disablePortal
-                          disableClearable
-                          id="combo-box-demo"
-                          options={equipments}
-                          getOptionLabel={(option) => option.name}
-                          sx={{ minWidth: 120 }}
-                          onChange={onExportOptionsEquipmentChanged}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Equipment"
-                              value={exportAreaSelectedEquipment}
-                            />
-                          )}
-                        />
-                      </div>
-                      <div className="singleOption">
-                        {" "}
-                        <Autocomplete
-                          disablePortal
-                          id="combo-box-demo"
-                          options={userTypes}
-                          sx={{ minWidth: 120 }}
-                          onChange={onExportOptionsUserTypeChanged}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="User Type"
-                              value={exportAreaUserType}
-                            />
-                          )}
-                        />
-                      </div>
-                      <div className="singleOption">
-                        {" "}
-                        <Autocomplete
-                          disablePortal
-                          disableClearable
-                          id="combo-box-demo"
-                          options={divisions}
-                          getOptionLabel={(option) => option.name}
-                          sx={{ minWidth: 120 }}
-                          onChange={onExportOptionsDivisionChanged}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Division"
-                              value={exportAreaDivision}
-                            />
-                          )}
-                        />
-                      </div>
-
-                      <CSVLink
-                        data={csvObject}
-                        onClick={exportHandle}
-                        className="exportButton"
-                      >
-                        Export
-                      </CSVLink>
-                      <div
-                        className="exportCancelButton"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setIsExportOptionsClicked(false);
-                        }}
-                      >
-                        Cancel
-                      </div>
-                    </div>
-                  )}
-                </div>
                 <div
                   className="link"
                   onClick={(e) => {
                     e.preventDefault();
                     getUsers();
                     setAddNew(true);
-                    getEquipments();
+
+                    getDivisions();
                   }}
                 >
-                  Give Equipment Authority
+                  Assign Equipment Authority
                 </div>
               </div>
-
-              <DataGrid
-                className="datagrid"
-                rows={equipmentUsers}
-                columns={columns}
-                //ACTİON COLUMN EKLENMEK İSTENİRSE
-                // columns={columns.concat(actionColumn)}
-                getRowId={(row: any) => generateRandom()}
-                initialState={{
-                  pagination: {
-                    paginationModel: { page: 0, pageSize: 15 },
-                  },
-                }}
-                pageSizeOptions={[15, 20]}
-                checkboxSelection
-              />
+              <Stack spacing={2} sx={{ width: "100%" }}>
+                <Box sx={{ height: 300, width: "100%" }}>
+                  {message && <Alert severity="info">{message}</Alert>}
+                  <div>
+                    <Dialog
+                      open={open}
+                      onClose={handleClose}
+                      aria-labelledby="alert-dialog-title"
+                      aria-describedby="alert-dialog-description"
+                    >
+                      <DialogTitle id="alert-dialog-title">
+                        {"Status will change"}
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                          Do you want to make the user active or inactive?
+                        </DialogContentText>
+                      </DialogContent>
+                      {isLoading ? (
+                        <span className="loader"></span>
+                      ) : (
+                        <DialogActions>
+                          <Button onClick={makeActive}>Active</Button>
+                          <Button onClick={makeInactive} autoFocus>
+                            Inactive
+                          </Button>
+                          <Button onClick={handleClose}>Back</Button>
+                        </DialogActions>
+                      )}
+                    </Dialog>
+                  </div>
+                  <DataGrid
+                    onRowClick={handleRowClick}
+                    //onProcessRowUpdateStart={}
+                    className="datagrid"
+                    rows={equipmentUsers}
+                    columns={columns.concat(actionColumn)}
+                    //ACTİON COLUMN EKLENMEK İSTENİRSE
+                    // columns={columns.concat(actionColumn)}
+                    getRowId={(row: any) => generateRandom()}
+                    initialState={{
+                      pagination: {
+                        paginationModel: { page: 0, pageSize: 15 },
+                      },
+                    }}
+                    pageSizeOptions={[15, 20]}
+                    checkboxSelection
+                    slots={{
+                      toolbar: CustomToolbar,
+                    }}
+                  >
+                    {" "}
+                    <GridToolbarExport
+                      csvOptions={{
+                        fileName: "customerDataBase",
+                        delimiter: ",",
+                        utf8WithBom: true,
+                      }}
+                    />
+                  </DataGrid>
+                </Box>
+              </Stack>
             </div>
           </div>
         </div>
@@ -414,7 +566,7 @@ const EquipmentAuth = () => {
             <Navbar />
             <div className="dataTable">
               <div className="datatableTitle">
-                Give Equipment Authority
+                Assign Equipment Authority
                 <div
                   className="link"
                   onClick={(e) => {
@@ -423,7 +575,7 @@ const EquipmentAuth = () => {
                   }}
                   style={{ color: "red", borderColor: "red" }}
                 >
-                  Exit This Screen
+                  Back
                 </div>
               </div>
 
@@ -434,6 +586,23 @@ const EquipmentAuth = () => {
                   <div className="bottom">
                     <div className="right">
                       <form onSubmit={handleAdd}>
+                        <div className="formInput">
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={divisions}
+                            getOptionLabel={(division) => division.name}
+                            sx={{ minWidth: 120 }}
+                            onChange={onDivisionChange}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Division"
+                                value={selectedDivision}
+                              />
+                            )}
+                          />
+                        </div>
                         <div className="formInput">
                           <Autocomplete
                             id="combo-box-demo"

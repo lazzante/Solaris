@@ -10,8 +10,9 @@ export const userDetailSlice = createSlice({
   reducers: {
     detailSetter: (state, action) => {
       console.log("STATE GELDİ : ", action.payload);
-      state.value = action.payload;
-      console.log("STATE = ", state.value);
+      if (action.payload.authorities) {
+        state.value = action.payload;
+      }
     },
   },
 });

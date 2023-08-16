@@ -30,7 +30,7 @@ import NewEquipment from "./pages/Equipments/NewEquipment";
 import Labratories from "./pages/Labratories/Labratories";
 import NewLabratory from "./pages/Labratories/NewLabratory";
 import EquipmentAuth from "./pages/EqAuth/EquipmentAuth";
-
+import Projects from "./pages/Projects/Projects";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -208,14 +208,11 @@ function App() {
           </Route>
           <Route path="equipmentAuth">
             <Route index element={<EquipmentAuth />} />
-            <Route
-              path=""
-              element={
-                <RequireAuth>
-                  <NewLabratory title="Add New Labratory" />
-                </RequireAuth>
-              }
-            />
+            <Route path="" element={<RequireAuth></RequireAuth>} />
+          </Route>
+          <Route path="projects">
+            <Route index element={<Projects />} />
+            <Route path="" element={<RequireAuth></RequireAuth>} />
           </Route>
         </Routes>
       </BrowserRouter>

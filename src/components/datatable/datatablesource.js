@@ -51,8 +51,6 @@ export const roleColumns = [
   { field: "name", headerName: "Name", width: 150 },
 ];
 
-export const eqAuthColumns = [
-  { field: "id", headerName: "ID", width: 50 },
-  
+export const eqAuthColumns = [{ field: "id", headerName: "ID", width: 50 }];
 
-]
+export const projectColumns = [{ field: "id", headerName: "ID", width: 50 }];

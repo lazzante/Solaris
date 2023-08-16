@@ -28,14 +28,21 @@ const Datatable = () => {
   let allUsers;
   const userRoles = useSelector(
     (state) => state.detailSetter.value.authorities
+    //
   );
+
   let roleNames;
 
   useEffect(() => {
-    roleNames = userRoles.map((role) => role.name);
-    userRoles.map((role) => {
-      role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
-    });
+    if (userRoles !== undefined) {
+      roleNames = userRoles.map((role) => role.name);
+      userRoles.map((role) => {
+        role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
+      });
+    } else {
+      setAuthority(false);
+    }
+
     const fetchData = async () => {
       let list = [];
       const getAllUsers = await axios
