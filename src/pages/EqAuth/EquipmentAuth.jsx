@@ -27,7 +27,7 @@ const EquipmentAuth = () => {
 
   const getAllEqUsers = async () => {
     const getAllUsers = await axios
-      .get("http://localhost:8080/equser/getAll")
+      .get("http://144.122.47.188:8080/equser/getAll")
       .then((response) => {
         setEquipmentUsers(response.data);
       })
@@ -97,7 +97,7 @@ const EquipmentAuth = () => {
   const getUsers = async () => {
     try {
       await axios
-        .get("http://localhost:8080/user/getAll")
+        .get("http://144.122.47.188:8080/user/getAll")
         .then((response) => {
           setUsers(response.data);
           console.log("USERS", response.data);
@@ -110,7 +110,7 @@ const EquipmentAuth = () => {
   const getEquipments = async (divisionName) => {
     let equipments = [];
     const getAllEquipments = await axios
-      .get("http://localhost:8080/equipment/getAll")
+      .get("http://144.122.47.188:8080/equipment/getAll")
       .then((response) => {
         response.data.map((equipment) => {
           equipment.equipmentDivisions.map((division) => {
@@ -126,7 +126,7 @@ const EquipmentAuth = () => {
   //GET DIVISIONS
   const getDivisions = async () => {
     const getAllDivisions = await axios
-      .get("http://localhost:8080/division/getAll")
+      .get("http://144.122.47.188:8080/division/getAll")
       .then((response) => {
         setDivisions(response.data);
       })
@@ -234,7 +234,7 @@ const EquipmentAuth = () => {
 
     e.preventDefault();
     const res = await axios
-      .post("http://localhost:8080/equser/add", {
+      .post("http://144.122.47.188:8080/equser/add", {
         userType: selectedUserType,
         status: selectedStatus,
         authdate: suAnDateString,
@@ -270,7 +270,7 @@ const EquipmentAuth = () => {
     const id = selectedRow.id;
 
     const res = await axios
-      .post(`http://localhost:8080/equser/update/${id}`, {
+      .post(`http://144.122.47.188:8080/equser/update/${id}`, {
         userType: selectedRow.userType,
         status: "ACTIVE",
         authdate: selectedRow.authdate,
@@ -302,7 +302,7 @@ const EquipmentAuth = () => {
     const id = selectedRow.id;
 
     const res = await axios
-      .post(`http://localhost:8080/equser/update/${id}`, {
+      .post(`http://144.122.47.188:8080/equser/update/${id}`, {
         userType: selectedRow.userType,
         status: "INACTIVE",
         authdate: selectedRow.authdate,
@@ -383,7 +383,7 @@ const EquipmentAuth = () => {
     console.log("ORGINAL ROW", originalRow);
 
     const res = await axios
-      .post(`http://localhost:8080/equser/update/${id}`, {
+      .post(`http://144.122.47.188:8080/equser/update/${id}`, {
         userType: originalRow.userType,
         status: "ACTIVE",
         authdate: originalRow.authdate,
@@ -408,7 +408,7 @@ const EquipmentAuth = () => {
   const onStatusCellEditInActive = async (originalRow) => {
     const id = originalRow.id;
     const res = await axios
-      .post(`http://localhost:8080/equser/update/${id}`, {
+      .post(`http://144.122.47.188:8080/equser/update/${id}`, {
         userType: originalRow.userType,
         status: "INACTIVE",
         authdate: originalRow.authdate,

@@ -8,6 +8,10 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { async } from "@firebase/util";
 import { fontSize } from "@mui/system";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const NewLog = ({ inputs, title }) => {
   const [log, setLog] = useState("");
@@ -64,7 +68,7 @@ const NewLog = ({ inputs, title }) => {
 
   const getAllProjects = async () => {
     await axios
-      .get("http://localhost:8080/project/getAll")
+      .get("http://144.122.47.188:8080/project/getAll")
       .then((response) => {
         setProjects(response.data);
         let projectTypeData = [];
@@ -78,7 +82,7 @@ const NewLog = ({ inputs, title }) => {
 
   const getEquipments = async () => {
     await axios
-      .get("http://localhost:8080/equipment/getAll")
+      .get("http://144.122.47.188:8080/equipment/getAll")
       .then((response) => {
         setEquipments(response.data);
       })
@@ -87,7 +91,7 @@ const NewLog = ({ inputs, title }) => {
 
   const getTitles = async () => {
     await axios
-      .get("http://localhost:8080/title/getAll")
+      .get("http://144.122.47.188:8080/title/getAll")
       .then((response) => {
         setTitles(response.data);
       })
@@ -95,7 +99,7 @@ const NewLog = ({ inputs, title }) => {
   };
   const getPositions = async () => {
     await axios
-      .get("http://localhost:8080/position/getAll")
+      .get("http://144.122.47.188:8080/position/getAll")
       .then((response) => {
         setPositions(response.data);
       })
@@ -103,7 +107,7 @@ const NewLog = ({ inputs, title }) => {
   };
   const getDivisions = async () => {
     await axios
-      .get("http://localhost:8080/division/getAll")
+      .get("http://144.122.47.188:8080/division/getAll")
       .then((response) => {
         setDivisions(response.data);
       })
@@ -113,13 +117,13 @@ const NewLog = ({ inputs, title }) => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://localhost:8080/log/add", {
+      .post("http://144.122.47.188:8080/log/add", {
         date: date,
         time: time,
         operation: operation,
         projectUser: user,
         purposeOfOperation: selectedPurposeOfOperaiton,
-        projectCode: projectCode,
+        projectCode: "disabled",
         usageDuration: usageDuration,
         usageMode: usageMode,
         instutionName: instutionName,
@@ -188,6 +192,15 @@ const NewLog = ({ inputs, title }) => {
     setSelectedProject(values);
   };
 
+  const onDateChange = (value) => {
+    var date = new Date(value.$d);
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    setDate(day + "/" + month + "/" + year);
+
+    //console.log(day + "-" + month + "-" + year);
+  };
   return (
     <div className="new">
       <Sidebar />
@@ -269,21 +282,24 @@ const NewLog = ({ inputs, title }) => {
               </div>
 
               <div className="formInput">
-                <label>Date</label>
-                <input
-                  id="date"
-                  type="text"
-                  placeholder="12/05/2022"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      format="DD-MM-YYYY"
+                      label="Date"
+                      defaultValue={Date.now() || null}
+                      value={null}
+                      onChange={(value) => onDateChange(value)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
               </div>
               <div className="formInput">
                 <label>Time</label>
                 <input
                   id="time"
                   type="text"
-                  placeholder="15:00"
+                  placeholder=""
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
                 />
@@ -293,7 +309,7 @@ const NewLog = ({ inputs, title }) => {
                 <input
                   id="operation"
                   type="text"
-                  placeholder="EQE"
+                  placeholder=""
                   value={operation}
                   onChange={(e) => setOperation(e.target.value)}
                 />
@@ -303,28 +319,18 @@ const NewLog = ({ inputs, title }) => {
                 <input
                   id="user"
                   type="text"
-                  placeholder="Mert YILMAZ"
+                  placeholder=""
                   value={user}
                   onChange={(e) => setUser(e.target.value)}
                 />
               </div>
 
               <div className="formInput">
-                <label>Project Code</label>
-                <input
-                  id="projectCode"
-                  type="text"
-                  placeholder="121C274"
-                  value={projectCode}
-                  onChange={(e) => setProjectCode(e.target.value)}
-                />
-              </div>
-              <div className="formInput">
                 <label>Usage Duration</label>
                 <input
                   id="usageDuration"
                   type="text"
-                  placeholder="55 min"
+                  placeholder=""
                   value={usageDuration}
                   onChange={(e) => setUsageDuration(e.target.value)}
                 />
@@ -334,7 +340,7 @@ const NewLog = ({ inputs, title }) => {
                 <input
                   id="usageMode"
                   type="text"
-                  placeholder="Direct"
+                  placeholder=""
                   value={usageMode}
                   onChange={(e) => setUsageMode(e.target.value)}
                 />
@@ -344,7 +350,7 @@ const NewLog = ({ inputs, title }) => {
                 <input
                   id="instutionName"
                   type="text"
-                  placeholder="ODTU-GUNAM"
+                  placeholder=""
                   value={instutionName}
                   onChange={(e) => setInstutionName(e.target.value)}
                 />
@@ -354,7 +360,7 @@ const NewLog = ({ inputs, title }) => {
                 <input
                   id="instutionType"
                   type="text"
-                  placeholder="AR-GE"
+                  placeholder=""
                   value={instutionType}
                   onChange={(e) => setInstutionType(e.target.value)}
                 />
@@ -364,7 +370,7 @@ const NewLog = ({ inputs, title }) => {
                 <input
                   id="personName"
                   type="text"
-                  placeholder="Furkan Kerse"
+                  placeholder=""
                   value={personName}
                   onChange={(e) => setPersonName(e.target.value)}
                 />

@@ -28,7 +28,7 @@ const NewLabratory = ({ title }) => {
 
   const getDivisions = async () => {
     await axios
-      .get("http://localhost:8080/division/getAll")
+      .get("http://144.122.47.188:8080/division/getAll")
       .then((response) => {
         setDivisions(response.data);
       })
@@ -37,7 +37,7 @@ const NewLabratory = ({ title }) => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://localhost:8080/labratory/add", {
+      .post("http://144.122.47.188:8080/labratory/add", {
         name: name,
         bina: building,
         labratoryDivisions: [

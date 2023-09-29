@@ -5,8 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const Labratories = () => {
   const [labratoryData, setLabratoryData] = useState([]);
@@ -17,7 +16,7 @@ const Labratories = () => {
   useEffect(() => {
     const fetchData = async () => {
       const getAllLabratories = await axios
-        .get("http://localhost:8080/labratory/getAll")
+        .get("http://144.122.47.188:8080/labratory/getAll")
         .then((response) => {
           setLabratoryData(response.data);
         })
@@ -31,7 +30,7 @@ const Labratories = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8080/labratory/delete/${id}`
+        `http://144.122.47.188:8080/labratory/delete/${id}`
       );
       setLabratoryData(labratoryData.filter((item) => item.id !== id));
     } catch (error) {
@@ -50,7 +49,7 @@ const Labratories = () => {
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            <DeleteForeverIcon/>
+            <DeleteForeverIcon />
           </div>
         </div>
       );

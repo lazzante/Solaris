@@ -44,15 +44,20 @@ const Login = () => {
   //GET USER FROM JAVA BACKEND
   async function getUserDetails(uid) {
     try {
-      axios.get(`http://localhost:8080/user/uid/${uid}`).then((details) => {
-        //REDUX
-        if (details.data.authorities) {
-          dispatch1(detailSetter(details.data));
-          console.log("Giriyormu aceb");
-        } else {
-          dispatch1(detailSetter(""));
-        }
-      });
+      axios
+        .get(
+          `http://144.122.47.188:8080/
+user/uid/${uid}`
+        )
+        .then((details) => {
+          //REDUX
+          if (details.data.authorities) {
+            dispatch1(detailSetter(details.data));
+            console.log("Giriyormu aceb");
+          } else {
+            dispatch1(detailSetter(""));
+          }
+        });
     } catch (error) {
       console.log(error.message);
     }

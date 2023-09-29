@@ -46,7 +46,7 @@ const Datatable = () => {
     const fetchData = async () => {
       let list = [];
       const getAllUsers = await axios
-        .get("http://localhost:8080/user/getAll")
+        .get("http://144.122.47.188:8080/user/getAll")
         .then((response) => {
           setData(response.data);
           setAuthority(response.data.authorities);
@@ -59,7 +59,8 @@ const Datatable = () => {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`http://localhost:8080/user/delete/${id}`);
+      const res = await axios.delete(`http://144.122.47.188:8080/
+user/delete/${id}`);
       setData(data.filter((item) => item.id !== id));
       getAuth().deleteUser(data.uid); //BURDA KALDIM
     } catch (error) {

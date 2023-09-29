@@ -18,7 +18,7 @@ const Home = () => {
   // const getUserById = async (id) => {
   //   console.log(id);
   //   const user = await axios
-  //     .get(`http://localhost:8080/user/${id}`)
+  //     .get(`http://144.122.47.188:8080/user/${id}`)
   //     .then((response) => {
   //       setUser(response.data);
   //       console.log(response.data);

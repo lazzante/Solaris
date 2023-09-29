@@ -6,6 +6,10 @@ import axios from "axios";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const Projects = () => {
   //ALL TABLE DATA
@@ -28,7 +32,7 @@ const Projects = () => {
 
   const getAllProjects = async () => {
     const allProjects = await axios
-      .get("http://localhost:8080/project/getAll")
+      .get("http://144.122.47.188:8080/project/getAll")
       .then((response) => {
         setProjectsData(response.data);
       })
@@ -57,7 +61,7 @@ const Projects = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8080/project/delete/${id}`
+        `http://144.122.47.188:8080/project/delete/${id}`
       );
       setProjectsData(projectsData.filter((item) => item.id !== id));
     } catch (error) {
@@ -68,7 +72,7 @@ const Projects = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://localhost:8080/project/add", {
+      .post("http://144.122.47.188:8080/project/add", {
         projectCode: projectCode,
         projectName: projectName,
         startDate: startDate,
@@ -137,6 +141,25 @@ const Projects = () => {
       renderHeader: () => <strong>{"End Date "}</strong>,
     },
   ];
+
+  const onStartDateChange = (value) => {
+    var date = new Date(value.$d);
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    setStartDate(day + "/" + month + "/" + year);
+
+    //console.log(day + "-" + month + "-" + year);
+  };
+  const onEndDateChange = (value) => {
+    var date = new Date(value.$d);
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    setEndDate(day + "/" + month + "/" + year);
+
+    //console.log(day + "-" + month + "-" + year);
+  };
   return !addNew ? (
     <div className="list">
       <Sidebar />
@@ -233,20 +256,30 @@ const Projects = () => {
                         />
                       </div>
                       <div className="formInput">
-                        <label>Start Date</label>
-                        <input
-                          type="text"
-                          placeholder={"Start Date"}
-                          onChange={(e) => setStartDate(e.target.value)}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={["DatePicker"]}>
+                            <DatePicker
+                              format="DD-MM-YYYY"
+                              label="Start Date"
+                              defaultValue={Date.now() || null}
+                              value={null}
+                              onChange={(value) => onStartDateChange(value)}
+                            />
+                          </DemoContainer>
+                        </LocalizationProvider>
                       </div>
                       <div className="formInput">
-                        <label>End Date</label>
-                        <input
-                          type="text"
-                          placeholder={"End Date"}
-                          onChange={(e) => setEndDate(e.target.value)}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={["DatePicker"]}>
+                            <DatePicker
+                              format="DD-MM-YYYY"
+                              label="End Date"
+                              defaultValue={Date.now() || null}
+                              value={null}
+                              onChange={(value) => onEndDateChange(value)}
+                            />
+                          </DemoContainer>
+                        </LocalizationProvider>
                       </div>
 
                       <div className="formInput">

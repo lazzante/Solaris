@@ -6,8 +6,7 @@ import { roleColumns } from "../../components/datatable/datatablesource";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const Roles = () => {
   const [rolesData, setRolesData] = useState([]);
@@ -18,7 +17,7 @@ const Roles = () => {
     const fetchData = async () => {
       let list = [];
       const getAllRoles = await axios
-        .get("http://localhost:8080/authority/getAll")
+        .get("http://144.122.47.188:8080/authority/getAll")
         .then((response) => {
           allRoles = response.data;
           setRolesData(allRoles);
@@ -32,7 +31,7 @@ const Roles = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8080/authority/delete/${id}`
+        `http://144.122.47.188:8080/authority/delete/${id}`
       );
       setRolesData(rolesData.filter((item) => item.id !== id));
     } catch (error) {
@@ -51,7 +50,7 @@ const Roles = () => {
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            <DeleteForeverIcon/>
+            <DeleteForeverIcon />
           </div>
         </div>
       );

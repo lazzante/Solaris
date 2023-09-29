@@ -13,7 +13,7 @@ const NewDivision = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://localhost:8080/division/add", {
+      .post("http://144.122.47.188:8080/division/add", {
         name: division,
         short_name: divisionShort,
       })

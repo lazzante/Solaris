@@ -9,8 +9,7 @@ import {
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const Titles = () => {
   const [titlesData, setTitlesData] = useState([]);
@@ -21,7 +20,7 @@ const Titles = () => {
     const fetchData = async () => {
       let list = [];
       const getAllTitles = await axios
-        .get("http://localhost:8080/title/getAll")
+        .get("http://144.122.47.188:8080/title/getAll")
         .then((response) => {
           allTitles = response.data;
           setTitlesData(allTitles);
@@ -44,7 +43,7 @@ const Titles = () => {
             onClick={() => handleDelete(params.row.id)}
             className="deleteButton"
           >
-            <DeleteForeverIcon/>
+            <DeleteForeverIcon />
           </div>
         </div>
       );
@@ -65,7 +64,7 @@ const Titles = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8080/title/delete/${id}`
+        `http://144.122.47.188:8080/title/delete/${id}`
       );
       setTitlesData(titlesData.filter((item) => item.id !== id));
     } catch (error) {

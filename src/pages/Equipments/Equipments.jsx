@@ -5,8 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const Equipments = () => {
   const [equipmentData, setEquipmentData] = useState([]);
@@ -17,7 +16,7 @@ const Equipments = () => {
   useEffect(() => {
     const fetchData = async () => {
       const getAllEquipments = await axios
-        .get("http://localhost:8080/equipment/getAll")
+        .get("http://144.122.47.188:8080/equipment/getAll")
         .then((response) => {
           setEquipmentData(response.data);
         })
@@ -31,7 +30,7 @@ const Equipments = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8080/equipment/delete/${id}`
+        `http://144.122.47.188:8080/equipment/delete/${id}`
       );
       setEquipmentData(equipmentData.filter((item) => item.id !== id));
     } catch (error) {
@@ -50,7 +49,7 @@ const Equipments = () => {
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            <DeleteForeverIcon/>
+            <DeleteForeverIcon />
           </div>
         </div>
       );

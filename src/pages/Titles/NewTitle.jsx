@@ -14,7 +14,7 @@ const NewTitle = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://localhost:8080/title/add", {
+      .post("http://144.122.47.188:8080/title/add", {
         name: title,
         title_short: titleShort,
       })

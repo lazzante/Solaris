@@ -18,14 +18,14 @@ export default function New({ inputs, title }) {
   const [selectedTitle, setSelectedTitle] = useState([{}]);
   const [selectedPosition, setSelectedPosition] = useState([]);
   const [selectedDivision, setSelectedDivision] = useState([]);
-  const [selectedEquipments,setSelectedEquipments] = useState([]);
-  
+  const [selectedEquipments, setSelectedEquipments] = useState([]);
+
   //FETCH AREAS
   const [roles, setRoles] = useState([]);
   const [titles, setTitles] = useState([]);
   const [positions, setPositions] = useState([]);
   const [divisions, setDivisions] = useState([]);
-  const [equipments,setEquipments] = useState([]);
+  const [equipments, setEquipments] = useState([]);
   const navigate = useNavigate();
   const theme = useTheme();
 
@@ -39,7 +39,7 @@ export default function New({ inputs, title }) {
 
   const getRoles = async () => {
     await axios
-      .get("http://localhost:8080/authority/getAll")
+      .get("http://144.122.47.188:8080/authority/getAll")
       .then((response) => {
         setRoles(response.data);
       })
@@ -48,7 +48,7 @@ export default function New({ inputs, title }) {
 
   const getTitles = async () => {
     await axios
-      .get("http://localhost:8080/title/getAll")
+      .get("http://144.122.47.188:8080/title/getAll")
       .then((response) => {
         setTitles(response.data);
         console.log(response);
@@ -57,7 +57,7 @@ export default function New({ inputs, title }) {
   };
   const getPositions = async () => {
     await axios
-      .get("http://localhost:8080/position/getAll")
+      .get("http://144.122.47.188:8080/position/getAll")
       .then((response) => {
         setPositions(response.data);
       })
@@ -65,7 +65,7 @@ export default function New({ inputs, title }) {
   };
   const getDivisions = async () => {
     await axios
-      .get("http://localhost:8080/division/getAll")
+      .get("http://144.122.47.188:8080/division/getAll")
       .then((response) => {
         setDivisions(response.data);
       })
@@ -73,7 +73,7 @@ export default function New({ inputs, title }) {
   };
   const getEquipments = async () => {
     await axios
-      .get("http://localhost:8080/equipment/getAll")
+      .get("http://144.122.47.188:8080/equipment/getAll")
       .then((response) => {
         setEquipments(response.data);
       })
@@ -100,7 +100,7 @@ export default function New({ inputs, title }) {
 
       //AXIOS
       const axRes = await axios
-        .post("http://localhost:8080/signUp", {
+        .post("http://144.122.47.188:8080/signUp", {
           username: data.username,
           password: data.password,
           email: data.email,
@@ -135,9 +135,8 @@ export default function New({ inputs, title }) {
           ],
           equipments: selectedEquipments.map((eq) => ({
             id: eq.id,
-            name: eq.name, 
+            name: eq.name,
           })),
-          
         })
         .then((res) => {
           console.log("Başarılı bir şekilde tamamlandı");
@@ -155,7 +154,7 @@ export default function New({ inputs, title }) {
 
   const onEquipmentsChange = (event, values) => {
     setSelectedEquipments(values);
-    console.log("SELECTED EQUIPMENTS (onEqChange incoming value): ",values)
+    console.log("SELECTED EQUIPMENTS (onEqChange incoming value): ", values);
   };
   const onTagsChange = (event, values) => {
     setSelectedRole(values);

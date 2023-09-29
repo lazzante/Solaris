@@ -7,11 +7,15 @@ import { useTheme } from "@mui/material/styles";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 const NewEquipment = ({ title }) => {
   const [name, setName] = useState("");
@@ -32,6 +36,10 @@ const NewEquipment = ({ title }) => {
   //SELECTED DROPDOWNS
   const [selectedLabratories, setSelectedLabratories] = useState([]);
   const [selectedDivision, setSelectedDivision] = useState([]);
+  const [selectedProcurementSource, setSelectedProcurementSource] =
+    useState("");
+
+  const [selectedProcurementDate, setSelectedProcurementDate] = useState("");
 
   const navigate = useNavigate();
   const theme = useTheme();
@@ -43,7 +51,7 @@ const NewEquipment = ({ title }) => {
 
   const getLabratories = async () => {
     await axios
-      .get("http://localhost:8080/labratory/getAll")
+      .get("http://144.122.47.188:8080/labratory/getAll")
       .then((response) => {
         setLabratories(response.data);
       })
@@ -51,7 +59,7 @@ const NewEquipment = ({ title }) => {
   };
   const getDivisions = async () => {
     await axios
-      .get("http://localhost:8080/division/getAll")
+      .get("http://144.122.47.188:8080/division/getAll")
       .then((response) => {
         setDivisions(response.data);
       })
@@ -61,10 +69,10 @@ const NewEquipment = ({ title }) => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://localhost:8080/equipment/add", {
+      .post("http://144.122.47.188:8080/equipment/add", {
         name: name,
         procurementDate: procurementDate,
-        procurementSource: procurementSource,
+        procurementSource: selectedProcurementSource,
         fundingSource: fundingSource,
         fundingAmount: fundingAmount,
         manyfacturer: manyfacturer,
@@ -100,6 +108,16 @@ const NewEquipment = ({ title }) => {
   const onLabratoriesTagsChange = (event, values) => {
     setSelectedLabratories(values);
   };
+  const onProcurementDateChange = (value) => {
+    var date = new Date(value.$d);
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+    setProcurementDate(day + "/" + month + "/" + year);
+
+    //console.log(day + "-" + month + "-" + year);
+  };
+
   return (
     <div className="new">
       <Sidebar />
@@ -122,25 +140,43 @@ const NewEquipment = ({ title }) => {
                 />
               </div>
               <div className="formInput">
-                <label>Procurement Date</label>
-                <input
-                  id="procurementDate"
-                  type="text"
-                  placeholder=""
-                  value={procurementDate}
-                  onChange={(e) => setProcurementDate(e.target.value)}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      format="DD-MM-YYYY"
+                      label="Procurement Date"
+                      defaultValue={Date.now() || null}
+                      value={null}
+                      onChange={(value) => onProcurementDateChange(value)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
               </div>
 
               <div className="formInput">
-                <label>Procurement Source</label>
-                <input
-                  id="procurementSource"
-                  type="text"
-                  placeholder="EQE"
-                  value={procurementSource}
-                  onChange={(e) => setProcurementSource(e.target.value)}
-                />
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">
+                    Procurement Source
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={selectedProcurementSource}
+                    label="Procurement Source"
+                    onChange={(e) =>
+                      setSelectedProcurementSource(e.target.value)
+                    }
+                  >
+                    <MenuItem value={"Kamu Kaynaklı Destek"}>
+                      Kamu Kaynaklı Destek
+                    </MenuItem>
+                    <MenuItem value="Özel Sektör/STK Desteği">
+                      Özel Sektör/STK Desteği
+                    </MenuItem>
+                    <MenuItem value="Hibe">Hibe</MenuItem>
+                    <MenuItem value="Diğer">Diğer</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
 
               <div className="formInput">

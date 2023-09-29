@@ -12,7 +12,7 @@ const NewRole = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://localhost:8080/authority/add", {
+      .post("http://144.122.47.188:8080/authority/add", {
         name: role,
       })
       .then((res) => {

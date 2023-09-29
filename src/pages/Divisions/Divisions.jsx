@@ -15,7 +15,7 @@ const Divisions = () => {
     const fetchData = async () => {
       let list = [];
       const getAllDivisions = await axios
-        .get("http://localhost:8080/division/getAll")
+        .get("http://144.122.47.188:8080/division/getAll")
         .then((response) => {
           setDivisionsData(response.data);
         })
@@ -28,9 +28,11 @@ const Divisions = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8080/division/delete/${id}`
+        `http://144.122.47.188:8080/division/delete/${id}`
       );
-      setDivisionsData(divisionsData.filter((item) => item.id !== id));
+      if (res) {
+        setDivisionsData(divisionsData.filter((item) => item.id !== id));
+      }
     } catch (error) {
       console.log(error);
     }

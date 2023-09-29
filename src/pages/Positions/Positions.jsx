@@ -6,8 +6,7 @@ import { positionColumns } from "../../components/datatable/datatablesource";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const Positions = () => {
   const [positionsData, setPositionsData] = useState([]);
@@ -17,7 +16,7 @@ const Positions = () => {
   useEffect(() => {
     const fetchData = async () => {
       const getAllPositions = await axios
-        .get("http://localhost:8080/position/getAll")
+        .get("http://144.122.47.188:8080/position/getAll")
         .then((response) => {
           setPositionsData(response.data);
           console.log(allPositions);
@@ -31,7 +30,7 @@ const Positions = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://localhost:8080/position/delete/${id}`
+        `http://144.122.47.188:8080/position/delete/${id}`
       );
       setPositionsData(positionsData.filter((item) => item.id !== id));
     } catch (error) {
@@ -50,7 +49,7 @@ const Positions = () => {
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            <DeleteForeverIcon/>
+            <DeleteForeverIcon />
           </div>
         </div>
       );

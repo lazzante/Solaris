@@ -16,7 +16,7 @@ const Logs = () => {
   useEffect(() => {
     const fetchData = async () => {
       const getAllLogs = await axios
-        .get("http://localhost:8080/log/getAll")
+        .get("http://144.122.47.188:8080/log/getAll")
         .then((response) => {
           setLogsData(response.data);
         })
@@ -29,7 +29,8 @@ const Logs = () => {
   //DELETE OPERATION
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`http://localhost:8080/log/delete/${id}`);
+      const res = await axios.delete(`http://144.122.47.188:8080/
+log/delete/${id}`);
       setLogsData(logsData.filter((item) => item.id !== id));
     } catch (error) {
       console.log(error);
@@ -92,7 +93,6 @@ const Logs = () => {
       headerName: "Purpose Of Operation",
       width: 100,
     },
-    { field: "projectCode", headerName: "Project Code", width: 100 },
     {
       field: "purposeOfOperation",
       headerName: "Purpose Of Operation",
