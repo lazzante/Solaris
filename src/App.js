@@ -2,11 +2,11 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Homepage/Home";
 import List from "./pages/List/List";
-import New from "./pages/New/New";
+import NewUser from "./pages/Users/NewUser";
 import Single from "./pages/Single/Single";
 import { useContext, useState } from "react";
 import { AuthContext } from "./context/AuthContext";
-import { productInputs, userInputs } from "./pages/New/formsource";
+import { productInputs, userInputs } from "./pages/Users/formsource";
 import "./style/dark.scss";
 import { DarkModeContext } from "./context/darkModeContext";
 import Main from "./components/chat/Main";
@@ -82,7 +82,7 @@ function App() {
                 path="new"
                 element={
                   <RequireAuth>
-                    <New inputs={userInputs} title="Add New User" />
+                    <NewUser inputs={userInputs} title="Add New User" />
                   </RequireAuth>
                 }
               />

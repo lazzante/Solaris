@@ -16,7 +16,7 @@ const Equipments = () => {
   useEffect(() => {
     const fetchData = async () => {
       const getAllEquipments = await axios
-        .get("http://144.122.47.188:8080/equipment/getAll")
+        .get(`http://localhost:8080/equipment/getAll`)
         .then((response) => {
           setEquipmentData(response.data);
         })
@@ -30,7 +30,7 @@ const Equipments = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://144.122.47.188:8080/equipment/delete/${id}`
+        `http://localhost:8080/equipment/delete/${id}`
       );
       setEquipmentData(equipmentData.filter((item) => item.id !== id));
     } catch (error) {
@@ -111,22 +111,23 @@ const Equipments = () => {
       <div className="list">
         <Sidebar />
         <div className="listContainer">
-          <Navbar />
+          {/* <Navbar /> */}
           <div className="dataTable">
             <div className="datatableTitle">
-              Equipments
+              <h2>Equipments</h2>
               <Link to="/equipments/newEquipment" className="link">
                 Add New
               </Link>
             </div>
             <DataGrid
+              sx={{ height: "900px" }}
               className="datagrid"
               rows={equipmentData}
               columns={columns.concat(actionColumn)}
               getRowId={(row: any) => generateRandom()}
               initialState={{
                 pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
+                  paginationModel: { page: 0, pageSize: 25 },
                 },
               }}
               pageSizeOptions={[5, 10]}

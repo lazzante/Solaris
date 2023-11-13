@@ -1,4 +1,4 @@
-import "./Datatable.scss";
+import "./Users.scss";
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,12 +6,12 @@ import { useDispatch } from "react-redux";
 import { changeUserId } from "../../Redux/userIdSlice";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import CantAccess from "../../pages/Error/CantAccess";
+import CantAccess from "../Error/CantAccess";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { getAuth } from "firebase/auth";
 //USERS TABLE
-const Datatable = () => {
+const Users = () => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ const Datatable = () => {
     const fetchData = async () => {
       let list = [];
       const getAllUsers = await axios
-        .get("http://144.122.47.188:8080/user/getAll")
+        .get(`http://localhost:8080/user/getAll`)
         .then((response) => {
           setData(response.data);
           setAuthority(response.data.authorities);
@@ -59,8 +59,7 @@ const Datatable = () => {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`http://144.122.47.188:8080/
-user/delete/${id}`);
+      const res = await axios.delete(`http://localhost:8080/user/delete/${id}`);
       setData(data.filter((item) => item.id !== id));
       getAuth().deleteUser(data.uid); //BURDA KALDIM
     } catch (error) {
@@ -75,12 +74,42 @@ user/delete/${id}`);
 
   //TABLE COLUMNS
   const columns = [
-    { field: "uid", headerName: "UID", width: 100 },
-    { field: "firstname", headerName: "First Name", width: 150 },
-    { field: "lastname", headerName: "Last Name", width: 150 },
-    { field: "email", headerName: "Email", width: 100 },
-    { field: "password", headerName: "Password", width: 100 },
-    { field: "username", headerName: "Username", width: 100 },
+    {
+      field: "uid",
+      headerName: "UID",
+      width: 100,
+      renderHeader: () => <strong>{"uid "}</strong>,
+    },
+    {
+      field: "firstname",
+      headerName: "First Name",
+      width: 150,
+      renderHeader: () => <strong>{"First Name "}</strong>,
+    },
+    {
+      field: "lastname",
+      headerName: "Last Name",
+      width: 150,
+      renderHeader: () => <strong>{"Last Name "}</strong>,
+    },
+    {
+      field: "email",
+      headerName: "Email",
+      width: 100,
+      renderHeader: () => <strong>{"Email "}</strong>,
+    },
+    {
+      field: "password",
+      headerName: "Password",
+      width: 100,
+      renderHeader: () => <strong>{"Password "}</strong>,
+    },
+    {
+      field: "username",
+      headerName: "Username",
+      width: 100,
+      renderHeader: () => <strong>{"Username "}</strong>,
+    },
     {
       field: `titles`,
       valueGetter: (params) => {
@@ -88,6 +117,7 @@ user/delete/${id}`);
       },
       headerName: "Titles",
       width: 100,
+      renderHeader: () => <strong>{"Titles "}</strong>,
     },
     {
       field: `divisions`,
@@ -96,6 +126,7 @@ user/delete/${id}`);
       },
       headerName: "Divisions",
       width: 100,
+      renderHeader: () => <strong>{"Divisions "}</strong>,
     },
     {
       field: `positions`,
@@ -104,6 +135,7 @@ user/delete/${id}`);
       },
       headerName: "Positions",
       width: 100,
+      renderHeader: () => <strong>{"Positions "}</strong>,
     },
 
     {
@@ -113,6 +145,7 @@ user/delete/${id}`);
       },
       headerName: "Roles",
       width: 100,
+      renderHeader: () => <strong>{"Authorities "}</strong>,
     },
     {
       field: `equipments`,
@@ -121,6 +154,7 @@ user/delete/${id}`);
       },
       headerName: "Equipments",
       width: 100,
+      renderHeader: () => <strong>{"Equipments "}</strong>,
     },
   ];
 
@@ -128,6 +162,7 @@ user/delete/${id}`);
     field: "action",
     headerName: "Action",
     width: 200,
+    renderHeader: () => <strong>{"Action "}</strong>,
     renderCell: (params) => {
       return (
         <div className="cellAction">
@@ -170,12 +205,13 @@ user/delete/${id}`);
       return hasAuthority === true ? (
         <div className="datatable">
           <div className="datatableTitle">
-            <div>Users</div>
+            <h2 style={{ color: "#F49F3C" }}>Users</h2>
             <Link to="/users/new" className="link">
               Add New
             </Link>
           </div>
           <DataGrid
+            sx={{ height: "900px" }}
             className="datagrid"
             rows={data}
             columns={columns.concat(actionColumn)}
@@ -195,4 +231,4 @@ user/delete/${id}`);
     }
   }
 };
-export default Datatable;
+export default Users;

@@ -6,6 +6,7 @@ import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
 import "./Logs.scss";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { GridToolbarExport } from "@mui/x-data-grid";
 
 const Logs = () => {
   const [logsData, setLogsData] = useState([]);
@@ -16,7 +17,7 @@ const Logs = () => {
   useEffect(() => {
     const fetchData = async () => {
       const getAllLogs = await axios
-        .get("http://144.122.47.188:8080/log/getAll")
+        .get(`http://localhost:8080/log/getAll`)
         .then((response) => {
           setLogsData(response.data);
         })
@@ -29,7 +30,7 @@ const Logs = () => {
   //DELETE OPERATION
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`http://144.122.47.188:8080/
+      const res = await axios.delete(`http://localhost:8080/
 log/delete/${id}`);
       setLogsData(logsData.filter((item) => item.id !== id));
     } catch (error) {
@@ -41,6 +42,7 @@ log/delete/${id}`);
     field: "action",
     headerName: "Action",
     width: 200,
+    renderHeader: () => <strong>{"Action "}</strong>,
     renderCell: (params) => {
       return (
         <div className="cellAction">
@@ -75,6 +77,7 @@ log/delete/${id}`);
       },
       headerName: "Equipments",
       width: 100,
+      renderHeader: () => <strong>{"Equipments "}</strong>,
     },
     {
       field: `divisions`,
@@ -83,33 +86,31 @@ log/delete/${id}`);
       },
       headerName: "Divisions",
       width: 100,
+      renderHeader: () => <strong>{"Divisions "}</strong>,
     },
-    { field: "date", headerName: "Date", width: 75 },
-    { field: "time", headerName: "Time", width: 75 },
-    { field: "operation", headerName: "Operation", width: 75 },
-    { field: "projectUser", headerName: "User", width: 100 },
+    { field: "date", headerName: "Date", width: 75,renderHeader: () => <strong>{"Date "}</strong>, },
+    { field: "operation", headerName: "Operation", width: 75,renderHeader: () => <strong>{"Operation "}</strong>, },
+    { field: "projectUser", headerName: "User", width: 100,renderHeader: () => <strong>{"User "}</strong>, },
     {
       field: "purposeOfOperation",
       headerName: "Purpose Of Operation",
-      width: 100,
+      width: 150,
+      renderHeader: () => <strong>{"Purpose Of Operation "}</strong>,
     },
-    {
-      field: "purposeOfOperation",
-      headerName: "Purpose Of Operation",
-      width: 75,
-    },
-    { field: "usageDuration", headerName: "Usage Duration", width: 150 },
-    { field: "usageMode", headerName: "Usage Mode", width: 100 },
-    { field: "instutionName", headerName: "Instution Name", width: 150 },
-    { field: "instutionType", headerName: "Instution Type", width: 150 },
-    { field: "personName", headerName: "Person Name", width: 100 },
+   
+    { field: "usageDuration", headerName: "Usage Duration", width: 150,renderHeader: () => <strong>{"Usage Duration "}</strong>, },
+    { field: "usageMode", headerName: "Usage Mode", width: 100,renderHeader: () => <strong>{"Usage Mode "}</strong>, },
+    { field: "instutionName", headerName: "Instution Name", width: 150,renderHeader: () => <strong>{"Instution Name "}</strong>, },
+    { field: "instutionType", headerName: "Instution Type", width: 150,renderHeader: () => <strong>{"Instution Type "}</strong>, },
+    { field: "personName", headerName: "Person Name", width: 100,renderHeader: () => <strong>{"Person Name "}</strong>, },
     {
       field: `personTitles`,
       valueGetter: (params) => {
         return `${params.row.personTitles.map((titles) => titles.name)}`;
       },
       headerName: "Person Title",
-      width: 100,
+      width: 120,
+      renderHeader: () => <strong>{"Person Title "}</strong>,
     },
     {
       field: `personPositions`,
@@ -119,35 +120,43 @@ log/delete/${id}`);
         )}`;
       },
       headerName: "Person Position",
-      width: 100,
+      width: 120,
+      renderHeader: () => <strong>{"Person Position "}</strong>,
     },
   ];
+  function CustomToolbar() {
+    return <GridToolbarExport />;
+  }
 
   return (
     <div>
       <div className="list">
         <Sidebar />
         <div className="listContainer">
-          <Navbar />
+          {/* <Navbar /> */}
           <div className="dataTable">
             <div className="datatableTitle">
-              Logs
+              <h2>Logs</h2>
               <Link to="/logs/newLog" className="link">
                 Add New
               </Link>
             </div>
             <DataGrid
+              sx={{ height: "900px" }}
               className="datagrid"
               rows={logsData}
               columns={columns.concat(actionColumn)}
               getRowId={(row: any) => generateRandom()}
               initialState={{
                 pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
+                  paginationModel: { page: 0, pageSize: 25 },
                 },
               }}
               pageSizeOptions={[5, 10]}
               checkboxSelection
+              slots={{
+                toolbar: CustomToolbar,
+              }}
             />
           </div>
         </div>

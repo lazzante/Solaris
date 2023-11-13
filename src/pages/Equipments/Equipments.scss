@@ -1,20 +1,21 @@
 .new {
-  width: 100%;
+  width: 95%;
   display: flex;
+  justify-content: center;
 
   .newContainer {
-    flex: 6;
+    flex: 5;
 
     .top,
     .bottom {
       -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
       box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-      padding: 10px;
-      margin: 10px;
+      padding: 40px;
+      margin: 30px;
       display: flex;
 
       h1 {
-        color: #5bc2e7;
+        color: #F49F3C;
         font-size: 20px;
       }
 
@@ -35,13 +36,22 @@
 
         form {
           display: flex;
-          flex-wrap: wrap;
           gap: 20px;
           justify-content: space-around;
 
-          .formInput {
-            width: 50%;
+          .specialInput{
+            display: flex;
+            width: 100%;
             margin-top: 20px;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+          }
+        
+          .formInput {
+            width: 100%;
+            margin-top: 20px;
+           
 
             label {
               display: flex;
@@ -63,19 +73,27 @@
           }
 
           .saveButton {
-            margin-left: 35%;
-            width: 200px;
+            margin-left: 42%;
+            width: 250px;
             padding: 10px;
             border: none;
-            background-color: #5bc2e7;
+            background-color: #F49F3C;
             color: white;
             font-weight: bold;
+            font-size: large;
             cursor: pointer;
             margin-top: 20px;
+            border-radius: 100px;
+            align-items: center;
+            justify-content: center;
 
             &:disabled {
               background-color: rgba(3, 92, 92, 0.345);
               cursor: not-allowed;
+            }
+
+            &:hover{
+              background-color: #b66304;
             }
           }
         }

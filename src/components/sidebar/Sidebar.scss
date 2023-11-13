@@ -1,21 +1,22 @@
 .sidebar {
   //genişlik payı
   flex: 1;
-  border-right: 0.5px solid lightgray;
-  min-height: 100vh;
+  border-right: 1px solid lightgray;
+  min-height: 200vh;
   background-color: white;
 
   .top {
-    height: 50px;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
   .logo {
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
-    color: #5bc2e7;
+    color: #F49F3C;
+    // color: #5bc2e7;
   }
 
   hr {
@@ -45,12 +46,12 @@
         cursor: pointer;
 
         &:hover {
-          background-color: rgba(0, 0, 255, 0.519);
+          background-color: #eed0ae;
         }
 
         .icon {
-          font-size: 18px;
-          color: #5bc2e7;
+          font-size: 35px;
+          color: #F49F3C;
         }
 
         span {

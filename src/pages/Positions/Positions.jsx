@@ -2,7 +2,7 @@ import "./Positions.scss";
 import { React, useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
-import { positionColumns } from "../../components/datatable/datatablesource";
+import { positionColumns } from "../Users/datatablesource";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
@@ -16,7 +16,7 @@ const Positions = () => {
   useEffect(() => {
     const fetchData = async () => {
       const getAllPositions = await axios
-        .get("http://144.122.47.188:8080/position/getAll")
+        .get(`http://localhost:8080/position/getAll`)
         .then((response) => {
           setPositionsData(response.data);
           console.log(allPositions);
@@ -30,7 +30,7 @@ const Positions = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://144.122.47.188:8080/position/delete/${id}`
+        `http://localhost:8080/position/delete/${id}`
       );
       setPositionsData(positionsData.filter((item) => item.id !== id));
     } catch (error) {
@@ -71,15 +71,16 @@ const Positions = () => {
     <div className="list">
       <Sidebar />
       <div className="listContainer">
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="dataTable">
           <div className="datatableTitle">
-            Positions
+            <h2>Positions</h2>
             <Link to="/positions/newPosition" className="link">
               Add New
             </Link>
           </div>
           <DataGrid
+            sx={{ height: "900px" }}
             className="datagrid"
             rows={positionsData}
             columns={positionColumns.concat(actionColumn)}

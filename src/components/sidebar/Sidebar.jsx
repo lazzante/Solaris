@@ -45,7 +45,10 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="top">
         <Link to="/" style={{ textDecoration: "none" }}>
+          <div style={{display:"flex",alignItems:"center",marginBottom:"5px"}}>
+          <img src="/gunamlogo.png" alt="gunamLogo" style={{width:"90px"}}/>
           <span className="logo">solaris</span>
+          </div>
         </Link>
       </div>
       <hr />
@@ -136,10 +139,10 @@ const Sidebar = () => {
           </li>
           <p className="title">USER</p>
 
-          <li>
+          {/* <li>
             <AccountBoxIcon className="icon" />
             <span>Profile</span>
-          </li>
+          </li> */}
           <li onClick={handleLogout}>
             <LogoutIcon className="icon" />
             <span>Logout</span>

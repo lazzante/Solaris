@@ -2,7 +2,7 @@ import "./Roles.scss";
 import { React, useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
-import { roleColumns } from "../../components/datatable/datatablesource";
+import { roleColumns } from "../Users/datatablesource";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
@@ -17,7 +17,7 @@ const Roles = () => {
     const fetchData = async () => {
       let list = [];
       const getAllRoles = await axios
-        .get("http://144.122.47.188:8080/authority/getAll")
+        .get(`http://localhost:8080/authority/getAll`)
         .then((response) => {
           allRoles = response.data;
           setRolesData(allRoles);
@@ -31,7 +31,7 @@ const Roles = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://144.122.47.188:8080/authority/delete/${id}`
+        `http://localhost:8080/authority/delete/${id}`
       );
       setRolesData(rolesData.filter((item) => item.id !== id));
     } catch (error) {
@@ -72,15 +72,16 @@ const Roles = () => {
     <div className="list">
       <Sidebar />
       <div className="listContainer">
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="dataTable">
           <div className="datatableTitle">
-            Roles
+            <h2>Roles</h2>
             <Link to="/roles/newRole" className="link">
               Add New
             </Link>
           </div>
           <DataGrid
+            sx={{ height: "900px" }}
             className="datagrid"
             rows={rolesData}
             columns={roleColumns.concat(actionColumn)}

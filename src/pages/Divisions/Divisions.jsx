@@ -2,7 +2,7 @@ import "./Divisions.scss";
 import { React, useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
-import { divisionColumns } from "../../components/datatable/datatablesource";
+import { divisionColumns } from "../Users/datatablesource";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
@@ -15,7 +15,7 @@ const Divisions = () => {
     const fetchData = async () => {
       let list = [];
       const getAllDivisions = await axios
-        .get("http://144.122.47.188:8080/division/getAll")
+        .get(`http://localhost:8080/division/getAll`)
         .then((response) => {
           setDivisionsData(response.data);
         })
@@ -28,7 +28,7 @@ const Divisions = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://144.122.47.188:8080/division/delete/${id}`
+        `http://localhost:8080/division/delete/${id}`
       );
       if (res) {
         setDivisionsData(divisionsData.filter((item) => item.id !== id));
@@ -71,15 +71,16 @@ const Divisions = () => {
     <div className="list">
       <Sidebar />
       <div className="listContainer">
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="dataTable">
           <div className="datatableTitle">
-            Divisions
+            <h2>Divisions</h2>
             <Link to="/divisions/newDivision" className="link">
               Add New
             </Link>
           </div>
           <DataGrid
+            sx={{ height: "900px" }}
             className="datagrid"
             rows={divisionsData}
             columns={divisionColumns.concat(actionColumn)}

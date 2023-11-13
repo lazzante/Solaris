@@ -46,8 +46,7 @@ const Login = () => {
     try {
       axios
         .get(
-          `http://144.122.47.188:8080/
-user/uid/${uid}`
+          `http://localhost:8080/user/uid/${uid}`
         )
         .then((details) => {
           //REDUX
@@ -86,7 +85,9 @@ user/uid/${uid}`
   return (
     <div className="login">
       <form onSubmit={handleLogin}>
-        <img src={logo}></img>
+        <img src="/gunamlogo.png"></img>
+        <span><h2 style={{color:"#F49F3C", display:"inline"}}>Solaris</h2>&nbsp;<h6 style={{display:"inline"}}>V1.0</h6></span>
+        <br/>
         <input
           type="email"
           placeholder="email"

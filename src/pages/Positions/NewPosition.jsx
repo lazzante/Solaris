@@ -13,7 +13,7 @@ const NewPosition = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://144.122.47.188:8080/position/add", {
+      .post(`http://localhost:8080/position/add`, {
         name: position,
         description: positionDescription,
       })
@@ -32,10 +32,8 @@ const NewPosition = () => {
     <div className="new">
       <Sidebar />
       <div className="newContainer">
-        <Navbar />
-        <div className="top">
-          <h1>Positions</h1>
-        </div>
+        {/* <Navbar /> */}
+          <h2>Add New Position</h2>
         <div className="bottom">
           <div className="right">
             <form

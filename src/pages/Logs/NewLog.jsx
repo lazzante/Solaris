@@ -12,13 +12,16 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import "./NewLog.scss";
 
 const NewLog = ({ inputs, title }) => {
   const [log, setLog] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
   const [operation, setOperation] = useState("");
-  const [user, setUser] = useState("");
   const [purposeOfOperations, setPurposeOfOperations] = useState([]);
   const [projectCode, setProjectCode] = useState("");
   const [usageDuration, setUsageDuration] = useState("");
@@ -29,6 +32,7 @@ const NewLog = ({ inputs, title }) => {
 
   const navigate = useNavigate();
   const theme = useTheme();
+
   //FETCH STATES
   const [equipments, setEquipments] = useState([]);
   const [titles, setTitles] = useState([]);
@@ -36,6 +40,7 @@ const NewLog = ({ inputs, title }) => {
   const [divisions, setDivisions] = useState([]);
   const [projects, setProjects] = useState([]);
   const [projectsByType, setProjectByType] = useState([]);
+  const [users, setUsers] = useState([]);
 
   //SELECTED
   const [selectedTitle, setSelectedTitle] = useState([{}]);
@@ -46,13 +51,19 @@ const NewLog = ({ inputs, title }) => {
     []
   );
   const [selectedProject, setSelectedProject] = useState([]);
+  const [selectedUser, setSelectedUser] = useState([]);
+  const [selectedUserFirstName, setSelectedUserFirstName] = useState("");
+  const [selectedUserLastName, setSelectedUserLastName] = useState("");
+
+  const [isCalculated, setIsCalculated] = useState(false);
 
   useEffect(() => {
-    getEquipments();
+    getUsers();
     getTitles();
     getDivisions();
     getPositions();
     getAllProjects();
+    setIsCalculated(false);
   }, []);
 
   const getProjectsByProjectType = (type) => {
@@ -66,9 +77,22 @@ const NewLog = ({ inputs, title }) => {
     console.log("Items", items);
   };
 
+  //GET USERS
+  const getUsers = async () => {
+    try {
+      await axios
+        .get(`http://localhost:8080/user/getAll`)
+        .then((response) => {
+          setUsers(response.data);
+          console.log("USERS", response.data);
+        })
+        .catch((err) => console.log(err));
+    } catch (error) {}
+  };
+
   const getAllProjects = async () => {
     await axios
-      .get("http://144.122.47.188:8080/project/getAll")
+      .get(`http://localhost:8080/project/getAll`)
       .then((response) => {
         setProjects(response.data);
         let projectTypeData = [];
@@ -80,18 +104,35 @@ const NewLog = ({ inputs, title }) => {
       .catch((err) => console.log(err));
   };
 
-  const getEquipments = async () => {
-    await axios
-      .get("http://144.122.47.188:8080/equipment/getAll")
+  // const getEquipments = async () => {
+  //   await axios
+  //     .get(`http://localhost:8080/equipment/getAll`)
+  //     .then((response) => {
+  //       setEquipments(response.data);
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
+
+  //GET EQUIPMENTS
+  const getEquipments = async (divisionName) => {
+    let equipments = [];
+    const getAllEquipments = await axios
+      .get(`http://localhost:8080/equipment/getAll`)
       .then((response) => {
-        setEquipments(response.data);
+        response.data.map((equipment) => {
+          equipment.equipmentDivisions.map((division) => {
+            division.name === divisionName && equipments.push(equipment);
+          });
+        });
+
+        setEquipments(equipments);
       })
       .catch((err) => console.log(err));
   };
 
   const getTitles = async () => {
     await axios
-      .get("http://144.122.47.188:8080/title/getAll")
+      .get(`http://localhost:8080/title/getAll`)
       .then((response) => {
         setTitles(response.data);
       })
@@ -99,7 +140,7 @@ const NewLog = ({ inputs, title }) => {
   };
   const getPositions = async () => {
     await axios
-      .get("http://144.122.47.188:8080/position/getAll")
+      .get(`http://localhost:8080/position/getAll`)
       .then((response) => {
         setPositions(response.data);
       })
@@ -107,7 +148,7 @@ const NewLog = ({ inputs, title }) => {
   };
   const getDivisions = async () => {
     await axios
-      .get("http://144.122.47.188:8080/division/getAll")
+      .get(`http://localhost:8080/division/getAll`)
       .then((response) => {
         setDivisions(response.data);
       })
@@ -117,11 +158,11 @@ const NewLog = ({ inputs, title }) => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://144.122.47.188:8080/log/add", {
+      .post(`http://localhost:8080/log/add`, {
         date: date,
         time: time,
         operation: operation,
-        projectUser: user,
+        projectUser: `${selectedUserFirstName} ${selectedUserLastName}`,
         purposeOfOperation: selectedPurposeOfOperaiton,
         projectCode: "disabled",
         usageDuration: usageDuration,
@@ -182,8 +223,13 @@ const NewLog = ({ inputs, title }) => {
   };
 
   const onDivisionTagsChange = (event, values) => {
-    setSelectedDivision(values);
+    if (values !== null) {
+      setSelectedDivision(values);
+      console.log("Division selected : ", values.name);
+      getEquipments(values.name);
+    }
   };
+
   const onPurposeOfOperationChanges = (event, values) => {
     setSelectedPurposeOfOperation(values);
     getProjectsByProjectType(values);
@@ -201,68 +247,86 @@ const NewLog = ({ inputs, title }) => {
 
     //console.log(day + "-" + month + "-" + year);
   };
+  const onUserChange = (event, value) => {
+    if (value !== null) {
+      console.log("User : ", value);
+
+      setSelectedUserFirstName(value.firstname);
+      setSelectedUserLastName(value.lastname);
+    } else {
+      console.log("USER NULL GİRİLDİ");
+    }
+  };
+
+  //END TİME - START TİME = DURATİON TİME
+  function calculateDuration(startTime1, endTime1) {
+    let sTime = startTime1.getTime();
+    let eTime = endTime1.getTime();
+    let time = (eTime - sTime) / 60000;
+    setUsageDuration(`${time.toString()} min`);
+    setIsCalculated(true);
+    console.log(time);
+  }
+
   return (
     <div className="new">
       <Sidebar />
       <div className="newContainer">
-        <Navbar />
-        <div className="top">
-          <h1>{title}</h1>
-        </div>
+        {/* <Navbar /> */}
+        <h2>New Log Registration</h2>
+
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleAdd}>
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={purposeOfOperations}
-                  sx={{ minWidth: 120 }}
-                  onChange={onPurposeOfOperationChanges}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Purpose Of Operation"
-                      value={selectedPurposeOfOperaiton}
+              <div className="specialInput">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      format="DD-MM-YYYY"
+                      label="Date"
+                      defaultValue={Date.now() || null}
+                      value={null}
+                      onChange={(value) => onDateChange(value)}
                     />
-                  )}
-                />
+                  </DemoContainer>
+                </LocalizationProvider>
               </div>
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={projectsByType}
-                  getOptionLabel={(option) => option.projectName}
-                  sx={{ minWidth: 120 }}
-                  onChange={onProjectsByTypeChanged}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Projects"
-                      value={selectedProject}
+              <div className="specialInput">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["TimePicker"]}>
+                    <TimePicker
+                      label="Start Time"
+                      onChange={(value) => {
+                        console.log("Start Time", value.$d);
+                        setStartTime(value.$d);
+                      }}
                     />
-                  )}
-                />
-              </div>
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={equipments}
-                  getOptionLabel={(option) => option.name}
-                  sx={{ minWidth: 120 }}
-                  onChange={onEquipmentTagsChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Equipment"
-                      value={selectedEquipment}
-                    />
-                  )}
-                />
+                  </DemoContainer>
+                </LocalizationProvider>
               </div>
 
+              <div className="specialInput">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["TimePicker"]}>
+                    <TimePicker
+                      label="End Time"
+                      onChange={(value) => {
+                        console.log("End Time", value.$d);
+                        setEndTime(value.$d);
+                        calculateDuration(startTime, value.$d);
+                      }}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+
+              {isCalculated ? (
+                <div className="specialInput">
+                  <h3>Usage Duration : {usageDuration}</h3>
+                </div>
+              ) : (
+                <></>
+              )}
               <div className="formInput">
                 <Autocomplete
                   disablePortal
@@ -282,98 +346,146 @@ const NewLog = ({ inputs, title }) => {
               </div>
 
               <div className="formInput">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker"]}>
-                    <DatePicker
-                      format="DD-MM-YYYY"
-                      label="Date"
-                      defaultValue={Date.now() || null}
-                      value={null}
-                      onChange={(value) => onDateChange(value)}
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={equipments}
+                  getOptionLabel={(option) => option.name}
+                  sx={{ minWidth: 120 }}
+                  onChange={onEquipmentTagsChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Equipment"
+                      value={selectedEquipment}
                     />
-                  </DemoContainer>
-                </LocalizationProvider>
-              </div>
-              <div className="formInput">
-                <label>Time</label>
-                <input
-                  id="time"
-                  type="text"
-                  placeholder=""
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                />
-              </div>
-              <div className="formInput">
-                <label>Operation</label>
-                <input
-                  id="operation"
-                  type="text"
-                  placeholder=""
-                  value={operation}
-                  onChange={(e) => setOperation(e.target.value)}
-                />
-              </div>
-              <div className="formInput">
-                <label>User</label>
-                <input
-                  id="user"
-                  type="text"
-                  placeholder=""
-                  value={user}
-                  onChange={(e) => setUser(e.target.value)}
+                  )}
                 />
               </div>
 
               <div className="formInput">
-                <label>Usage Duration</label>
-                <input
-                  id="usageDuration"
-                  type="text"
-                  placeholder=""
-                  value={usageDuration}
-                  onChange={(e) => setUsageDuration(e.target.value)}
-                />
-              </div>
-              <div className="formInput">
-                <label>Usage Mode</label>
-                <input
-                  id="usageMode"
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Usage Mode"
+                  size="medium"
                   type="text"
                   placeholder=""
                   value={usageMode}
                   onChange={(e) => setUsageMode(e.target.value)}
                 />
               </div>
+
               <div className="formInput">
-                <label>Instution Name</label>
-                <input
-                  id="instutionName"
-                  type="text"
-                  placeholder=""
-                  value={instutionName}
-                  onChange={(e) => setInstutionName(e.target.value)}
+                
+                    <TextField
+                    fullWidth
+                      id="outlined-basic"
+                      label="Operation Name"
+                      size="normal"
+                      type="text"
+                      value={operation}
+                      onChange={(e) => setOperation(e.target.value)}
+                    />
+                
+              </div>
+
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={users}
+                  getOptionLabel={(option) =>
+                    option.firstname +
+                    " " +
+                    option.lastname +
+                    " <-> " +
+                    option.email
+                  }
+                  sx={{ minWidth: 120 }}
+                  onChange={onUserChange}
+                  renderInput={(params) => (
+                    <TextField {...params} label="User" value={selectedUser} />
+                  )}
                 />
               </div>
+
               <div className="formInput">
-                <label>Instution Type</label>
-                <input
-                  id="instutionType"
-                  type="text"
-                  placeholder=""
-                  value={instutionType}
-                  onChange={(e) => setInstutionType(e.target.value)}
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={purposeOfOperations}
+                  sx={{ minWidth: 120 }}
+                  onChange={onPurposeOfOperationChanges}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Purpose Of Operation (Project)"
+                      value={selectedPurposeOfOperaiton}
+                    />
+                  )}
                 />
               </div>
+
               <div className="formInput">
-                <label>Person Name</label>
-                <input
-                  id="personName"
-                  type="text"
-                  placeholder=""
-                  value={personName}
-                  onChange={(e) => setPersonName(e.target.value)}
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={projectsByType}
+                  getOptionLabel={(option) => option.projectName}
+                  sx={{ minWidth: 120 }}
+                  onChange={onProjectsByTypeChanged}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Projects"
+                      value={selectedProject}
+                    />
+                  )}
                 />
+              </div>
+
+              <div className="formInput">
+                
+                    <TextField
+                      fullWidth
+                      id="outlined-basic"
+                      label="Instution Name"
+                      size="normal"
+                      type="text"
+                      placeholder=""
+                      value={instutionName}
+                      onChange={(e) => setInstutionName(e.target.value)}
+                    />
+                  
+              </div>
+              <div className="formInput">
+                
+                    <TextField
+                      fullWidth
+                      id="outlined-basic"
+                      label="Instution Type"
+                      size="normal"
+                      type="text"
+                      placeholder=""
+                      value={instutionType}
+                      onChange={(e) => setInstutionType(e.target.value)}
+                    />
+                 
+              </div>
+              <div className="formInput">
+                
+                    <TextField
+                      fullWidth
+                      id="outlined-basic"
+                      label="Person Name"
+                      size="normal"
+                      type="text"
+                      placeholder=""
+                      value={personName}
+                      onChange={(e) => setPersonName(e.target.value)}
+                    />
+                 
               </div>
               <div className="formInput">
                 <Autocomplete

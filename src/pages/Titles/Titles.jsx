@@ -2,10 +2,7 @@ import "./Titles.scss";
 import { React, useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  positionColumns,
-  titleColumns,
-} from "../../components/datatable/datatablesource";
+import { positionColumns, titleColumns } from "../Users/datatablesource";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
@@ -20,7 +17,7 @@ const Titles = () => {
     const fetchData = async () => {
       let list = [];
       const getAllTitles = await axios
-        .get("http://144.122.47.188:8080/title/getAll")
+        .get(`http://localhost:8080/title/getAll`)
         .then((response) => {
           allTitles = response.data;
           setTitlesData(allTitles);
@@ -64,7 +61,7 @@ const Titles = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://144.122.47.188:8080/title/delete/${id}`
+        `http://localhost:8080/title/delete/${id}`
       );
       setTitlesData(titlesData.filter((item) => item.id !== id));
     } catch (error) {
@@ -76,22 +73,23 @@ const Titles = () => {
     <div className="list">
       <Sidebar />
       <div className="listContainer">
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="dataTable">
           <div className="datatableTitle">
-            Titles
+            <h2>Titles</h2>
             <Link to="/titles/newTitle" className="link">
               Add New
             </Link>
           </div>
           <DataGrid
+            sx={{ height: "900px" }}
             className="datagrid"
             rows={titlesData}
             columns={titleColumns.concat(actionColumn)}
             getRowId={(row: any) => generateRandom()}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
+                paginationModel: { page: 0, pageSize: 25 },
               },
             }}
             pageSizeOptions={[5, 10]}

@@ -12,7 +12,7 @@ const NewRole = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://144.122.47.188:8080/authority/add", {
+      .post(`http://localhost:8080/authority/add`, {
         name: role,
       })
       .then((res) => {
@@ -32,10 +32,8 @@ const NewRole = () => {
     <div className="new">
       <Sidebar />
       <div className="newContainer">
-        <Navbar />
-        <div className="top">
-          <h1>Roles</h1>
-        </div>
+        {/* <Navbar /> */}
+          <h2>Add New Role</h2>
         <div className="bottom">
           <div className="right">
             <form

@@ -32,7 +32,7 @@ const Projects = () => {
 
   const getAllProjects = async () => {
     const allProjects = await axios
-      .get("http://144.122.47.188:8080/project/getAll")
+      .get(`http://localhost:8080/project/getAll`)
       .then((response) => {
         setProjectsData(response.data);
       })
@@ -61,7 +61,7 @@ const Projects = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://144.122.47.188:8080/project/delete/${id}`
+        `http://localhost:8080/project/delete/${id}`
       );
       setProjectsData(projectsData.filter((item) => item.id !== id));
     } catch (error) {
@@ -72,7 +72,7 @@ const Projects = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://144.122.47.188:8080/project/add", {
+      .post(`http://localhost:8080/project/add`, {
         projectCode: projectCode,
         projectName: projectName,
         startDate: startDate,
@@ -164,10 +164,10 @@ const Projects = () => {
     <div className="list">
       <Sidebar />
       <div className="listContainer">
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="dataTable">
           <div className="datatableTitle">
-            Projects
+            <h2>Projects</h2>
             <div
               className="link"
               onClick={(e) => {
@@ -179,6 +179,7 @@ const Projects = () => {
             </div>
           </div>
           <DataGrid
+            sx={{ height: "900px" }}
             className="datagrid"
             rows={projectsData}
             columns={projectColumns.concat(actionColumn)}
@@ -202,7 +203,7 @@ const Projects = () => {
           <Navbar />
           <div className="dataTable">
             <div className="datatableTitle">
-              New Project
+              <h2 style={{ fontSize: " 24px" }}>Add New Project</h2>
               <div
                 className="link"
                 onClick={(e) => {

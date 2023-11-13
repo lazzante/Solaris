@@ -16,7 +16,7 @@ const Labratories = () => {
   useEffect(() => {
     const fetchData = async () => {
       const getAllLabratories = await axios
-        .get("http://144.122.47.188:8080/labratory/getAll")
+        .get(`http://localhost:8080/labratory/getAll`)
         .then((response) => {
           setLabratoryData(response.data);
         })
@@ -30,7 +30,7 @@ const Labratories = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://144.122.47.188:8080/labratory/delete/${id}`
+        `http://localhost:8080/labratory/delete/${id}`
       );
       setLabratoryData(labratoryData.filter((item) => item.id !== id));
     } catch (error) {
@@ -87,15 +87,16 @@ const Labratories = () => {
       <div className="list">
         <Sidebar />
         <div className="listContainer">
-          <Navbar />
+          {/* <Navbar /> */}
           <div className="dataTable">
             <div className="datatableTitle">
-              Labratories
+              <h2>Laboratories</h2>
               <Link to="/labratories/newLabratory" className="link">
                 Add New
               </Link>
             </div>
             <DataGrid
+              sx={{ height: "900px" }}
               className="datagrid"
               rows={labratoryData}
               columns={columns.concat(actionColumn)}

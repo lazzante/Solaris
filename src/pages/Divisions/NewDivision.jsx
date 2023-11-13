@@ -13,7 +13,7 @@ const NewDivision = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://144.122.47.188:8080/division/add", {
+      .post(`http://localhost:8080/division/add`, {
         name: division,
         short_name: divisionShort,
       })
@@ -32,10 +32,8 @@ const NewDivision = () => {
     <div className="new">
       <Sidebar />
       <div className="newContainer">
-        <Navbar />
-        <div className="top">
-          <h1>Titles</h1>
-        </div>
+        {/* <Navbar /> */}
+          <h2>Add New Division</h2>
         <div className="bottom">
           <div className="right">
             <form
@@ -54,9 +52,9 @@ const NewDivision = () => {
                 />
               </div>
               <div className="formInput">
-                <label>Title Short</label>
+                <label>Division Short</label>
                 <input
-                  id="titleShort"
+                  id="divisionShort"
                   type="text"
                   placeholder="S.E"
                   value={divisionShort}

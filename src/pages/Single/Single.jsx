@@ -8,7 +8,7 @@ import axios from "axios";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
-import Input from "@mui/base/Input";
+import {Input} from "@mui/base/Input";
 import { useNavigate } from "react-router-dom";
 
 const Single = ({ inputs }) => {
@@ -47,7 +47,7 @@ const Single = ({ inputs }) => {
 
   const getAllTitles = async () => {
     const titlesRes = await axios
-      .get("http://144.122.47.188:8080/title/getAll")
+      .get(`http://localhost:8080/title/getAll`)
       .then((res) => {
         setTitles(res.data);
       })
@@ -58,7 +58,7 @@ const Single = ({ inputs }) => {
 
   const getAllDivisions = async () => {
     const divisionres = await axios
-      .get("http://144.122.47.188:8080/division/getAll")
+      .get(`http://localhost:8080/division/getAll`)
       .then((res) => {
         setDivisions(res.data);
       })
@@ -69,7 +69,7 @@ const Single = ({ inputs }) => {
 
   const getAllPositions = async () => {
     const positionres = await axios
-      .get("http://144.122.47.188:8080/position/getAll")
+      .get(`http://localhost:8080/position/getAll`)
       .then((res) => {
         setPositions(res.data);
       })
@@ -80,7 +80,7 @@ const Single = ({ inputs }) => {
 
   const getAllRoles = async () => {
     const authorityres = await axios
-      .get("http://144.122.47.188:8080/authority/getAll")
+      .get(`http://localhost:8080/authority/getAll`)
       .then((res) => {
         setRoles(res.data);
       })
@@ -91,7 +91,7 @@ const Single = ({ inputs }) => {
 
   const getAllEquipments = async () => {
     const equipmentRes = await axios
-      .get("http://144.122.47.188:8080/equipment/getAll")
+      .get(`http://localhost:8080/equipment/getAll`)
       .then((res) => {
         setEquipments(res.data);
       })
@@ -102,7 +102,7 @@ const Single = ({ inputs }) => {
 
   const getUserById = async (id) => {
     const user = await axios
-      .get(`http://144.122.47.188:8080/user/${id}`)
+      .get(`http://localhost:8080/user/${id}`)
       .then((response) => {
         setUser(response.data);
       })
@@ -141,7 +141,7 @@ const Single = ({ inputs }) => {
     try {
       //AXIOS
       const axRes = await axios
-        .post(`http://144.122.47.188:8080/user/update/${userId}`, {
+        .post(`http://localhost:8080/user/update/${userId}`, {
           username: username,
           password: user.password,
           email: user.email,
@@ -198,7 +198,7 @@ const Single = ({ inputs }) => {
     <div className="single">
       <Sidebar />
       <div className="singleContainer">
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="top">
           <div className="left">
             <div

@@ -18,7 +18,7 @@ const Home = () => {
   // const getUserById = async (id) => {
   //   console.log(id);
   //   const user = await axios
-  //     .get(`http://144.122.47.188:8080/user/${id}`)
+  //     .get(`http://localhost:8080/user/${id}`)
   //     .then((response) => {
   //       setUser(response.data);
   //       console.log(response.data);
@@ -36,20 +36,20 @@ const Home = () => {
     <div className="home">
       <Sidebar />
       <div className="homeContainer">
-        <Navbar />
+        {/* <Navbar /> */}
         <div className="widgets">
-          <Widget type="user" />
+          {/* <Widget type="user" />
           <Widget type="order" />
           <Widget type="earning" />
-          <Widget type="balance" />
+          <Widget type="balance" /> */}
         </div>
         <div className="charts">
-          <Featured />
-          <Chart aspect={2 / 1} title={"Last 6 Months (Revenue)"} />
+          {/* <Featured />
+          <Chart aspect={2 / 1} title={"Last 6 Months (Revenue)"} /> */}
         </div>
         <div className="listContainer">
-          <div className="listTitle">Latest Transactions</div>
-          <Table />
+          {/* <div className="listTitle">Latest Transactions</div>
+          <Table /> */}
         </div>
       </div>
     </div>

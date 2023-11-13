@@ -1,7 +1,6 @@
-import "./New.scss";
+import "./NewUser.scss";
 import { useState, React, useEffect } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
-import Navbar from "../../components/navbar/Navbar";
 import { auth } from "../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +10,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 
-export default function New({ inputs, title }) {
+export default function NewUser({ inputs, title }) {
   const [data, setData] = useState({});
   //SELECT AREAS
   const [selectedRole, setSelectedRole] = useState([]);
@@ -39,7 +38,7 @@ export default function New({ inputs, title }) {
 
   const getRoles = async () => {
     await axios
-      .get("http://144.122.47.188:8080/authority/getAll")
+      .get(`http://localhost:8080/authority/getAll`)
       .then((response) => {
         setRoles(response.data);
       })
@@ -48,7 +47,7 @@ export default function New({ inputs, title }) {
 
   const getTitles = async () => {
     await axios
-      .get("http://144.122.47.188:8080/title/getAll")
+      .get(`http://localhost:8080/title/getAll`)
       .then((response) => {
         setTitles(response.data);
         console.log(response);
@@ -57,7 +56,7 @@ export default function New({ inputs, title }) {
   };
   const getPositions = async () => {
     await axios
-      .get("http://144.122.47.188:8080/position/getAll")
+      .get(`http://localhost:8080/position/getAll`)
       .then((response) => {
         setPositions(response.data);
       })
@@ -65,7 +64,7 @@ export default function New({ inputs, title }) {
   };
   const getDivisions = async () => {
     await axios
-      .get("http://144.122.47.188:8080/division/getAll")
+      .get(`http://localhost:8080/division/getAll`)
       .then((response) => {
         setDivisions(response.data);
       })
@@ -73,7 +72,7 @@ export default function New({ inputs, title }) {
   };
   const getEquipments = async () => {
     await axios
-      .get("http://144.122.47.188:8080/equipment/getAll")
+      .get(`http://localhost:8080/equipment/getAll`)
       .then((response) => {
         setEquipments(response.data);
       })
@@ -100,7 +99,7 @@ export default function New({ inputs, title }) {
 
       //AXIOS
       const axRes = await axios
-        .post("http://144.122.47.188:8080/signUp", {
+        .post(`http://localhost:8080/signUp`, {
           username: data.username,
           password: data.password,
           email: data.email,
@@ -175,10 +174,10 @@ export default function New({ inputs, title }) {
     <div className="new">
       <Sidebar />
       <div className="newContainer">
-        <Navbar />
-        <div className="top">
-          <h1>{title}</h1>
-        </div>
+        {/* <Navbar /> */}
+        
+          <h2>Add New User</h2>
+        
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleAdd}>

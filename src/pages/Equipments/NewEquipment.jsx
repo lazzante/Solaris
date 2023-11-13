@@ -51,7 +51,7 @@ const NewEquipment = ({ title }) => {
 
   const getLabratories = async () => {
     await axios
-      .get("http://144.122.47.188:8080/labratory/getAll")
+      .get(`http://localhost:8080/labratory/getAll`)
       .then((response) => {
         setLabratories(response.data);
       })
@@ -59,7 +59,7 @@ const NewEquipment = ({ title }) => {
   };
   const getDivisions = async () => {
     await axios
-      .get("http://144.122.47.188:8080/division/getAll")
+      .get(`http://localhost:8080/division/getAll`)
       .then((response) => {
         setDivisions(response.data);
       })
@@ -69,7 +69,7 @@ const NewEquipment = ({ title }) => {
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
-      .post("http://144.122.47.188:8080/equipment/add", {
+      .post(`http://localhost:8080/equipment/add`, {
         name: name,
         procurementDate: procurementDate,
         procurementSource: selectedProcurementSource,
@@ -122,23 +122,26 @@ const NewEquipment = ({ title }) => {
     <div className="new">
       <Sidebar />
       <div className="newContainer">
-        <Navbar />
-        <div className="top">
-          <h1>{title}</h1>
-        </div>
+        {/* <Navbar /> */}
+        
+          <h2>Add New Equipment</h2>
+       
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleAdd}>
-              <div className="formInput">
-                <label>Name</label>
-                <input
-                  id="name"
+            <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Equipment Name"
+                  size="medium"
                   type="text"
                   placeholder=""
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
+          
               <div className="formInput">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
@@ -180,9 +183,11 @@ const NewEquipment = ({ title }) => {
               </div>
 
               <div className="formInput">
-                <label>Funding Source</label>
-                <input
-                  id="fundingSource"
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Funding Source"
+                  size="medium"
                   type="text"
                   placeholder=""
                   value={fundingSource}
@@ -191,30 +196,37 @@ const NewEquipment = ({ title }) => {
               </div>
 
               <div className="formInput">
-                <label>Funding Amount</label>
-                <input
-                  id="fundingAmount"
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Funding Amount"
+                  size="medium"
                   type="text"
                   placeholder=""
                   value={fundingAmount}
                   onChange={(e) => setFundingAmount(e.target.value)}
                 />
               </div>
+
               <div className="formInput">
-                <label>Manyfacturer</label>
-                <input
-                  id="manyfacturer"
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Manyfacturer"
+                  size="medium"
                   type="text"
                   placeholder=""
                   value={manyfacturer}
                   onChange={(e) => setManyfacturer(e.target.value)}
                 />
               </div>
-
+             
               <div className="formInput">
-                <label>Equipment Identifier</label>
-                <input
-                  id="equipmentIdentifier"
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Equipment Identifier"
+                  size="medium"
                   type="text"
                   placeholder=""
                   value={equipmentIdentifier}
@@ -223,25 +235,35 @@ const NewEquipment = ({ title }) => {
               </div>
 
               <div className="formInput">
-                <label>Equipment Alt Name</label>
-                <input
-                  id="equipmentAltName"
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Equipment Alt Name"
+                  size="medium"
                   type="text"
                   placeholder=""
                   value={equipmentAltName}
                   onChange={(e) => setEquipmentAltName(e.target.value)}
                 />
               </div>
+
               <div className="formInput">
-                <label>Equipment Eng Name</label>
-                <input
-                  id="equipmentEngName"
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Equipment Eng Name"
+                  size="medium"
                   type="text"
                   placeholder=""
                   value={equipmentEngName}
                   onChange={(e) => setEquipmentEngName(e.target.value)}
                 />
               </div>
+
+             
+
+          
+
               <div className="formInput">
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">
