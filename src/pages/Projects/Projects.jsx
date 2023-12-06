@@ -10,8 +10,15 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import TextField from "@mui/material/TextField";
+import { useSelector } from "react-redux";
+import CantAccess from "../Error/CantAccess";
+import NewProject from "./NewProject";
 
 const Projects = () => {
+  //GİRİŞ YAPINCA AUTHORİTY KONTROL
+  const [hasAuthority, setHasAuthority] = useState();
+
   //ALL TABLE DATA
   const [projectsData, setProjectsData] = useState([]);
 
@@ -26,7 +33,21 @@ const Projects = () => {
   const [projectType, setProjectType] = useState("");
   const [projectCoordinator, setProjectCoordinator] = useState("");
 
+  const userRoles = useSelector(
+    (state) => state.detailSetter.value.authorities
+  );
+  let roleNames;
+
   useEffect(() => {
+    if (userRoles !== undefined) {
+      console.log(userRoles);
+      roleNames = userRoles.map((role) => role.name);
+      userRoles.map((role) => {
+        role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
+      });
+    } else {
+      setHasAuthority(false);
+    }
     getAllProjects();
   }, []);
 
@@ -34,7 +55,9 @@ const Projects = () => {
     const allProjects = await axios
       .get(`http://localhost:8080/project/getAll`)
       .then((response) => {
-        setProjectsData(response.data);
+        if (response?.data) {
+          setProjectsData(response.data);
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -67,28 +90,6 @@ const Projects = () => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handleAdd = async (e) => {
-    e.preventDefault();
-    const res = await axios
-      .post(`http://localhost:8080/project/add`, {
-        projectCode: projectCode,
-        projectName: projectName,
-        startDate: startDate,
-        endDate: endDate,
-        projectType: projectType,
-        projectCoordinator: projectCoordinator,
-      })
-      .then((res) => {
-        console.log("Başarılı bir şekilde tamamlandı");
-        getAllProjects();
-        setAddNew(false);
-      })
-      .catch((error) => {
-        console.log("Başarısız");
-        console.log(error.message);
-      });
   };
 
   function generateRandom() {
@@ -142,163 +143,42 @@ const Projects = () => {
     },
   ];
 
-  const onStartDateChange = (value) => {
-    var date = new Date(value.$d);
-    var day = date.getDate();
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-    setStartDate(day + "/" + month + "/" + year);
 
-    //console.log(day + "-" + month + "-" + year);
-  };
-  const onEndDateChange = (value) => {
-    var date = new Date(value.$d);
-    var day = date.getDate();
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-    setEndDate(day + "/" + month + "/" + year);
-
-    //console.log(day + "-" + month + "-" + year);
-  };
-  return !addNew ? (
-    <div className="list">
-      <Sidebar />
-      <div className="listContainer">
-        {/* <Navbar /> */}
-        <div className="dataTable">
-          <div className="datatableTitle">
-            <h2>Projects</h2>
-            <div
-              className="link"
-              onClick={(e) => {
-                e.preventDefault();
-                setAddNew(true);
-              }}
-            >
-              Add New
-            </div>
-          </div>
-          <DataGrid
-            sx={{ height: "900px" }}
-            className="datagrid"
-            rows={projectsData}
-            columns={projectColumns.concat(actionColumn)}
-            getRowId={(row: any) => generateRandom()}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSizeOptions={[5, 10]}
-            checkboxSelection
-          />
-        </div>
-      </div>
-    </div>
-  ) : (
+  return (
     <div>
       <div className="list">
         <Sidebar />
         <div className="listContainer">
-          <Navbar />
+          {/* <Navbar /> */}
+          {hasAuthority ? 
+        (
           <div className="dataTable">
             <div className="datatableTitle">
-              <h2 style={{ fontSize: " 24px" }}>Add New Project</h2>
-              <div
-                className="link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setAddNew(false);
-                }}
-                style={{ color: "red", borderColor: "red" }}
-              >
-                Back
-              </div>
+              <h2>Projects</h2>
+              <Link to="/projects/newProject" className="link">
+                Add New
+              </Link>
             </div>
-            {/*BURASI İTİBARİYLE ADD EKRANI*/}
-
-            <div className="new">
-              <div className="newContainer">
-                <div className="bottom">
-                  <div className="right">
-                    <form onSubmit={handleAdd}>
-                      <div className="formInput">
-                        <label>Project Name</label>
-                        <input
-                          type="text"
-                          placeholder={"Project Name"}
-                          onChange={(e) => setProjectName(e.target.value)}
-                        />
-                      </div>
-                      <div className="formInput">
-                        <label>Project Type</label>
-                        <input
-                          type="text"
-                          placeholder={"Project Type"}
-                          onChange={(e) => setProjectType(e.target.value)}
-                        />
-                      </div>
-                      <div className="formInput">
-                        <label>Project Code</label>
-                        <input
-                          type="text"
-                          placeholder={"Project Code"}
-                          onChange={(e) => setProjectCode(e.target.value)}
-                        />
-                      </div>
-                      <div className="formInput">
-                        <label>Project Coordinator</label>
-                        <input
-                          type="text"
-                          placeholder={"Project Coordinator"}
-                          onChange={(e) =>
-                            setProjectCoordinator(e.target.value)
-                          }
-                        />
-                      </div>
-                      <div className="formInput">
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoContainer components={["DatePicker"]}>
-                            <DatePicker
-                              format="DD-MM-YYYY"
-                              label="Start Date"
-                              defaultValue={Date.now() || null}
-                              value={null}
-                              onChange={(value) => onStartDateChange(value)}
-                            />
-                          </DemoContainer>
-                        </LocalizationProvider>
-                      </div>
-                      <div className="formInput">
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoContainer components={["DatePicker"]}>
-                            <DatePicker
-                              format="DD-MM-YYYY"
-                              label="End Date"
-                              defaultValue={Date.now() || null}
-                              value={null}
-                              onChange={(value) => onEndDateChange(value)}
-                            />
-                          </DemoContainer>
-                        </LocalizationProvider>
-                      </div>
-
-                      <div className="formInput">
-                        <button
-                          type="submit"
-                          className="saveButton"
-                          onClick={handleAdd}
-                        >
-                          Save
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <DataGrid
+              sx={{ height: "900px" }}
+              className="datagrid"
+              rows={projectsData}
+              columns={projectColumns.concat(actionColumn)}
+              getRowId={(row: any) => generateRandom()}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 },
+                },
+              }}
+              pageSizeOptions={[5, 10]}
+              checkboxSelection
+            />
           </div>
-        </div>
+        
+          ):(<CantAccess/>)}</div>
+
+
+
       </div>
     </div>
   );

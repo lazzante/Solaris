@@ -49,7 +49,10 @@ const Single = ({ inputs }) => {
     const titlesRes = await axios
       .get(`http://localhost:8080/title/getAll`)
       .then((res) => {
-        setTitles(res.data);
+        if(res?.data){
+          setTitles(res.data);
+        }
+        
       })
       .catch((error) => {
         console.log(error);
@@ -60,7 +63,9 @@ const Single = ({ inputs }) => {
     const divisionres = await axios
       .get(`http://localhost:8080/division/getAll`)
       .then((res) => {
+        if(res?.data){
         setDivisions(res.data);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -71,7 +76,9 @@ const Single = ({ inputs }) => {
     const positionres = await axios
       .get(`http://localhost:8080/position/getAll`)
       .then((res) => {
+        if(res?.data){
         setPositions(res.data);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -82,7 +89,9 @@ const Single = ({ inputs }) => {
     const authorityres = await axios
       .get(`http://localhost:8080/authority/getAll`)
       .then((res) => {
+        if(res?.data){
         setRoles(res.data);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -93,7 +102,9 @@ const Single = ({ inputs }) => {
     const equipmentRes = await axios
       .get(`http://localhost:8080/equipment/getAll`)
       .then((res) => {
+        if(res?.data){
         setEquipments(res.data);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -104,7 +115,9 @@ const Single = ({ inputs }) => {
     const user = await axios
       .get(`http://localhost:8080/user/${id}`)
       .then((response) => {
+        if(response?.data){
         setUser(response.data);
+        }
       })
       .catch((error) => {
         console.log(error);

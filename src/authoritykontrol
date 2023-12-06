@@ -1,0 +1,22 @@
+import { useSelector } from "react-redux";
+import CantAccess from "../Error/CantAccess";
+ 
+ //GİRİŞ YAPINCA AUTHORİTY KONTROL
+  const [hasAuthority, setHasAuthority] = useState();
+
+  const userRoles = useSelector(
+    (state) => state.detailSetter.value.authorities
+  );
+  let roleNames;
+
+  useEffect(() => {
+    if (userRoles !== undefined) {
+      console.log(userRoles);
+      roleNames = userRoles.map((role) => role.name);
+      userRoles.map((role) => {
+        role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
+      });
+    } else {
+      setHasAuthority(false);
+    }
+  }, []);

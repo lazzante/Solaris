@@ -1,0 +1,226 @@
+    <form onSubmit={handleAdd}>
+              <div className="specialInput">
+                <button style={{border:"3px solid black"}}>
+                <h1 style={{color:"red", fontSize:"25px"}}>Current User</h1>
+                &nbsp;
+                &nbsp;
+                <h3>{`${selectedUserFirstName} ${selectedUserLastName}`}</h3>
+                </button>
+              </div>
+              <div className="specialInput">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      format="DD-MM-YYYY"
+                      label="Date"
+                      defaultValue={Date.now() || null}
+                      value={null}
+                      onChange={(value) => onDateChange(value)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+              <div className="specialInput">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["TimePicker"]}>
+                    <TimePicker
+                      label="Start Time"
+                      onChange={(value) => {
+                        console.log("Start Time", value.$d);
+                        setStartTime(value.$d);
+                      }}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+
+              <div className="specialInput">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["TimePicker"]}>
+                    <TimePicker
+                      label="End Time"
+                      onChange={(value) => {
+                        console.log("End Time", value.$d);
+                        setEndTime(value.$d);
+                        calculateDuration(startTime, value.$d);
+                      }}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+
+              {isCalculated ? (
+                <div className="specialInput">
+                  <h3>Usage Duration : {usageDuration}</h3>
+                </div>
+              ) : (
+                <></>
+              )}
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={divisions}
+                  getOptionLabel={(option) => option.name}
+                  sx={{ minWidth: 120 }}
+                  onChange={onDivisionTagsChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Division"
+                      value={selectedDivision}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={equipments}
+                  getOptionLabel={(option) => option.name}
+                  sx={{ minWidth: 120 }}
+                  onChange={onEquipmentTagsChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Equipment"
+                      value={selectedEquipment}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Usage Mode"
+                  size="medium"
+                  type="text"
+                  placeholder=""
+                  value={usageMode}
+                  onChange={(e) => setUsageMode(e.target.value)}
+                />
+              </div>
+
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-basic"
+                  label="Operation Name"
+                  size="normal"
+                  type="text"
+                  value={operation}
+                  onChange={(e) => setOperation(e.target.value)}
+                />
+              </div>
+
+             
+
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={purposeOfOperations}
+                  sx={{ minWidth: 120 }}
+                  onChange={onPurposeOfOperationChanges}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Purpose Of Operation (Project)"
+                      value={selectedPurposeOfOperaiton}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={projectsByType}
+                  getOptionLabel={(option) => option.projectName}
+                  sx={{ minWidth: 120 }}
+                  onChange={onProjectsByTypeChanged}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Projects"
+                      value={selectedProject}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-basic"
+                  label="Instution Name"
+                  size="normal"
+                  type="text"
+                  placeholder=""
+                  value={instutionName}
+                  onChange={(e) => setInstutionName(e.target.value)}
+                />
+              </div>
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-basic"
+                  label="Instution Type"
+                  size="normal"
+                  type="text"
+                  placeholder=""
+                  value={instutionType}
+                  onChange={(e) => setInstutionType(e.target.value)}
+                />
+              </div>
+            
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={titles}
+                  getOptionLabel={(title, id) => title.name}
+                  sx={{ minWidth: 120 }}
+                  onChange={onTitleTagsChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Person Title"
+                      value={selectedTitle}
+                    />
+                  )}
+                />
+              </div>
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={positions}
+                  getOptionLabel={(option) => option.name}
+                  sx={{ minWidth: 120 }}
+                  onChange={onPositionTagsChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Position"
+                      value={selectedPosition}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="formInput">
+                <button
+                  type="submit"
+                  className="saveButton"
+                  onClick={handleAdd}
+                >
+                  Save
+                </button>
+              </div>
+            </form>

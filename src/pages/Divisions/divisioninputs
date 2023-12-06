@@ -1,0 +1,38 @@
+ <form
+              onSubmit={(e) => {
+                handleAdd(e);
+              }}
+            >
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Division Name"
+                  size="medium"
+                  type="text"
+                  value={division}
+                  onChange={(e) => setDivision(e.target.value)}
+                />
+              </div>
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Division Short"
+                  size="medium"
+                  type="text"
+                  value={divisionShort}
+                  onChange={(e) => setDivisionShort(e.target.value)}
+                />
+              </div>
+
+              <div className="formInput">
+                <button
+                  type="submit"
+                  className="saveButton"
+                  onClick={handleAdd}
+                >
+                  Save
+                </button>
+              </div>
+            </form>

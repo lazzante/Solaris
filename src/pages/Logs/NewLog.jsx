@@ -14,6 +14,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import "./NewLog.scss";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const NewLog = ({ inputs, title }) => {
   const [log, setLog] = useState("");
@@ -40,7 +42,7 @@ const NewLog = ({ inputs, title }) => {
   const [divisions, setDivisions] = useState([]);
   const [projects, setProjects] = useState([]);
   const [projectsByType, setProjectByType] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState([]);
 
   //SELECTED
   const [selectedTitle, setSelectedTitle] = useState([{}]);
@@ -55,16 +57,20 @@ const NewLog = ({ inputs, title }) => {
   const [selectedUserFirstName, setSelectedUserFirstName] = useState("");
   const [selectedUserLastName, setSelectedUserLastName] = useState("");
 
+  const [eqByDivisionAndUser, setEqByDivisionAndUser] = useState([]);
+
   const [isCalculated, setIsCalculated] = useState(false);
 
   useEffect(() => {
-    getUsers();
+    getUser();
     getTitles();
     getDivisions();
     getPositions();
     getAllProjects();
     setIsCalculated(false);
   }, []);
+
+  const getUserSession = useSelector((state) => state.detailSetter.value);
 
   const getProjectsByProjectType = (type) => {
     let items = [];
@@ -78,13 +84,25 @@ const NewLog = ({ inputs, title }) => {
   };
 
   //GET USERS
-  const getUsers = async () => {
+  const getUser = async () => {
+    const userId = getUserSession.id;
+
     try {
       await axios
-        .get(`http://localhost:8080/user/getAll`)
+        .get(`http://localhost:8080/user/${userId}`)
         .then((response) => {
-          setUsers(response.data);
-          console.log("USERS", response.data);
+          console.log("USER:", response.data);
+          setUser(response.data);
+          if (response !== null) {
+            console.log(
+              "User : ",
+              `${response.data.firstname} ${response.data.lastname}`
+            );
+            setSelectedUserFirstName(response.data.firstname);
+            setSelectedUserLastName(response.data.lastname);
+          } else {
+            console.log("USER NULL GİRİLDİ");
+          }
         })
         .catch((err) => console.log(err));
     } catch (error) {}
@@ -114,21 +132,21 @@ const NewLog = ({ inputs, title }) => {
   // };
 
   //GET EQUIPMENTS
-  const getEquipments = async (divisionName) => {
-    let equipments = [];
-    const getAllEquipments = await axios
-      .get(`http://localhost:8080/equipment/getAll`)
-      .then((response) => {
-        response.data.map((equipment) => {
-          equipment.equipmentDivisions.map((division) => {
-            division.name === divisionName && equipments.push(equipment);
-          });
-        });
+  // const getEquipments = async (divisionName) => {
+  //   let equipments = [];
+  //   const getAllEquipments = await axios
+  //     .get(`http://localhost:8080/equipment/getAll`)
+  //     .then((response) => {
+  //       response.data.map((equipment) => {
+  //         equipment.equipmentDivisions.map((division) => {
+  //           division.name === divisionName && equipments.push(equipment);
+  //         });
+  //       });
 
-        setEquipments(equipments);
-      })
-      .catch((err) => console.log(err));
-  };
+  //       setEquipments(equipments);
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
 
   const getTitles = async () => {
     await axios
@@ -155,6 +173,34 @@ const NewLog = ({ inputs, title }) => {
       .catch((err) => console.log(err));
   };
 
+  var specialEquipments = [];
+
+  const getEquipmentsByDivisionAndUser = async (selectedDivisionInForm) => {
+    const userId = getUserSession.id;
+    var comingEquipments = [];
+    var specialEquipments = [];
+    if (selectedDivisionInForm) {
+      await axios
+        .get(`http://localhost:8080/equser/getUsersByUserId/${userId}`)
+        .then((user) => {
+          user?.data?.map((item) => {
+            if (item.status !== "INACTIVE") {
+              comingEquipments.push(item.equipment);
+            }
+          });
+          comingEquipments.map((item) =>
+            item.equipmentDivisions.map((div) => {
+              div.name == selectedDivisionInForm &&
+                specialEquipments.push(item);
+            })
+          );
+          setEquipments(specialEquipments);
+          console.log("Gelen ekipmanlar",specialEquipments);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
   const handleAdd = async (e) => {
     e.preventDefault();
     const res = await axios
@@ -169,7 +215,7 @@ const NewLog = ({ inputs, title }) => {
         usageMode: usageMode,
         instutionName: instutionName,
         instutionType: instutionType,
-        personName: personName,
+        personName: `${selectedUserFirstName} ${selectedUserLastName}`,
         equipments: [
           {
             id: selectedEquipment.id,
@@ -226,7 +272,7 @@ const NewLog = ({ inputs, title }) => {
     if (values !== null) {
       setSelectedDivision(values);
       console.log("Division selected : ", values.name);
-      getEquipments(values.name);
+      getEquipmentsByDivisionAndUser(values.name);
     }
   };
 
@@ -247,16 +293,15 @@ const NewLog = ({ inputs, title }) => {
 
     //console.log(day + "-" + month + "-" + year);
   };
-  const onUserChange = (event, value) => {
-    if (value !== null) {
-      console.log("User : ", value);
-
-      setSelectedUserFirstName(value.firstname);
-      setSelectedUserLastName(value.lastname);
-    } else {
-      console.log("USER NULL GİRİLDİ");
-    }
-  };
+  // const onUserChange = (event, value) => {
+  //   if (value !== null) {
+  //     console.log("User : ", value);
+  //     setSelectedUserFirstName(value.firstname);
+  //     setSelectedUserLastName(value.lastname);
+  //   } else {
+  //     console.log("USER NULL GİRİLDİ");
+  //   }
+  // };
 
   //END TİME - START TİME = DURATİON TİME
   function calculateDuration(startTime1, endTime1) {
@@ -273,267 +318,261 @@ const NewLog = ({ inputs, title }) => {
       <Sidebar />
       <div className="newContainer">
         {/* <Navbar /> */}
-        <h2>New Log Registration</h2>
+        <h2 style={{marginLeft: "50%",color:"green"}}>New Log</h2>
+        <form onSubmit={handleAdd}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "auto auto auto",
+              textAlign: "center",
+              padding: "10px",
+              marginTop: "80px",
+            }}
+          >
+            <div style={{ marginLeft: "50px" }}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DatePicker"]}>
+                  <DatePicker
+                    format="DD-MM-YYYY"
+                    label="Date"
+                    defaultValue={Date.now() || null}
+                    value={null}
+                    onChange={(value) => onDateChange(value)}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
+            <div style={{ marginLeft: "50px" }}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["TimePicker"]}>
+                  <TimePicker
+                    label="Start Time"
+                    onChange={(value) => {
+                      console.log("Start Time", value.$d);
+                      setStartTime(value.$d);
+                    }}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
+            <div style={{ marginLeft: "50px" }}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["TimePicker"]}>
+                  <TimePicker
+                    label="End Time"
+                    onChange={(value) => {
+                      console.log("End Time", value.$d);
+                      setEndTime(value.$d);
+                      calculateDuration(startTime, value.$d);
+                    }}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
 
-        <div className="bottom">
-          <div className="right">
-            <form onSubmit={handleAdd}>
-              <div className="specialInput">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker"]}>
-                    <DatePicker
-                      format="DD-MM-YYYY"
-                      label="Date"
-                      defaultValue={Date.now() || null}
-                      value={null}
-                      onChange={(value) => onDateChange(value)}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-              </div>
-              <div className="specialInput">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["TimePicker"]}>
-                    <TimePicker
-                      label="Start Time"
-                      onChange={(value) => {
-                        console.log("Start Time", value.$d);
-                        setStartTime(value.$d);
-                      }}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-              </div>
+            <div style={{ marginLeft: "50px", marginTop: "50px" }}>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={divisions}
+                getOptionLabel={(option) => option.name}
+                sx={{ minWidth: 120 }}
+                onChange={onDivisionTagsChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Division"
+                    value={selectedDivision}
+                  />
+                )}
+              />
+            </div>
 
-              <div className="specialInput">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["TimePicker"]}>
-                    <TimePicker
-                      label="End Time"
-                      onChange={(value) => {
-                        console.log("End Time", value.$d);
-                        setEndTime(value.$d);
-                        calculateDuration(startTime, value.$d);
-                      }}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
-              </div>
-
-              {isCalculated ? (
-                <div className="specialInput">
-                  <h3>Usage Duration : {usageDuration}</h3>
-                </div>
-              ) : (
-                <></>
-              )}
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={divisions}
-                  getOptionLabel={(option) => option.name}
-                  sx={{ minWidth: 120 }}
-                  onChange={onDivisionTagsChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Division"
-                      value={selectedDivision}
-                    />
-                  )}
-                />
-              </div>
-
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={equipments}
-                  getOptionLabel={(option) => option.name}
-                  sx={{ minWidth: 120 }}
-                  onChange={onEquipmentTagsChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Equipment"
-                      value={selectedEquipment}
-                    />
-                  )}
-                />
-              </div>
-
-              <div className="formInput">
-                <TextField
-                  fullWidth
-                  id="outlined-uncontrolled"
-                  label="Usage Mode"
-                  size="medium"
-                  type="text"
-                  placeholder=""
-                  value={usageMode}
-                  onChange={(e) => setUsageMode(e.target.value)}
-                />
-              </div>
-
-              <div className="formInput">
-                
-                    <TextField
-                    fullWidth
-                      id="outlined-basic"
-                      label="Operation Name"
-                      size="normal"
-                      type="text"
-                      value={operation}
-                      onChange={(e) => setOperation(e.target.value)}
-                    />
-                
-              </div>
-
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={users}
-                  getOptionLabel={(option) =>
-                    option.firstname +
-                    " " +
-                    option.lastname +
-                    " <-> " +
-                    option.email
-                  }
-                  sx={{ minWidth: 120 }}
-                  onChange={onUserChange}
-                  renderInput={(params) => (
-                    <TextField {...params} label="User" value={selectedUser} />
-                  )}
-                />
-              </div>
-
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={purposeOfOperations}
-                  sx={{ minWidth: 120 }}
-                  onChange={onPurposeOfOperationChanges}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Purpose Of Operation (Project)"
-                      value={selectedPurposeOfOperaiton}
-                    />
-                  )}
-                />
-              </div>
-
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={projectsByType}
-                  getOptionLabel={(option) => option.projectName}
-                  sx={{ minWidth: 120 }}
-                  onChange={onProjectsByTypeChanged}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Projects"
-                      value={selectedProject}
-                    />
-                  )}
-                />
-              </div>
-
-              <div className="formInput">
-                
-                    <TextField
-                      fullWidth
-                      id="outlined-basic"
-                      label="Instution Name"
-                      size="normal"
-                      type="text"
-                      placeholder=""
-                      value={instutionName}
-                      onChange={(e) => setInstutionName(e.target.value)}
-                    />
-                  
-              </div>
-              <div className="formInput">
-                
-                    <TextField
-                      fullWidth
-                      id="outlined-basic"
-                      label="Instution Type"
-                      size="normal"
-                      type="text"
-                      placeholder=""
-                      value={instutionType}
-                      onChange={(e) => setInstutionType(e.target.value)}
-                    />
-                 
-              </div>
-              <div className="formInput">
-                
-                    <TextField
-                      fullWidth
-                      id="outlined-basic"
-                      label="Person Name"
-                      size="normal"
-                      type="text"
-                      placeholder=""
-                      value={personName}
-                      onChange={(e) => setPersonName(e.target.value)}
-                    />
-                 
-              </div>
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={titles}
-                  getOptionLabel={(title, id) => title.name}
-                  sx={{ minWidth: 120 }}
-                  onChange={onTitleTagsChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Person Title"
-                      value={selectedTitle}
-                    />
-                  )}
-                />
-              </div>
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={positions}
-                  getOptionLabel={(option) => option.name}
-                  sx={{ minWidth: 120 }}
-                  onChange={onPositionTagsChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Position"
-                      value={selectedPosition}
-                    />
-                  )}
-                />
-              </div>
-
-              <div className="formInput">
-                <button
-                  type="submit"
-                  className="saveButton"
-                  onClick={handleAdd}
-                >
-                  Save
-                </button>
-              </div>
-            </form>
+            <div style={{ marginLeft: "50px", marginTop: "50px" }}>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={equipments}
+                getOptionLabel={(option) => option.name}
+                sx={{ minWidth: 120 }}
+                onChange={onEquipmentTagsChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Equipment"
+                    value={selectedEquipment}
+                  />
+                )}
+              />
+            </div>
+            <div style={{ marginLeft: "50px", marginTop: "50px" }}>
+              <TextField
+                fullWidth
+                id="outlined-uncontrolled"
+                label="Usage Mode"
+                size="medium"
+                type="text"
+                placeholder=""
+                value={usageMode}
+                onChange={(e) => setUsageMode(e.target.value)}
+              />
+            </div>
+            <div style={{ marginLeft: "50px", marginTop: "50px" }}>
+              {" "}
+              <TextField
+                fullWidth
+                id="outlined-basic"
+                label="Operation Name"
+                size="normal"
+                type="text"
+                value={operation}
+                onChange={(e) => setOperation(e.target.value)}
+              />
+            </div>
+            <div style={{ marginLeft: "50px", marginTop: "50px" }}>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={purposeOfOperations}
+                sx={{ minWidth: 120 }}
+                onChange={onPurposeOfOperationChanges}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Purpose Of Operation (Project)"
+                    value={selectedPurposeOfOperaiton}
+                  />
+                )}
+              />
+            </div>
+            <div style={{ marginLeft: "50px", marginTop: "50px" }}>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={projectsByType}
+                getOptionLabel={(option) => option.projectName}
+                sx={{ minWidth: 120 }}
+                onChange={onProjectsByTypeChanged}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Projects"
+                    value={selectedProject}
+                  />
+                )}
+              />
+            </div>
+            <div style={{ marginLeft: "50px", marginTop: "50px" }}>
+              <TextField
+                fullWidth
+                id="outlined-basic"
+                label="Instution Name"
+                size="normal"
+                type="text"
+                placeholder=""
+                value={instutionName}
+                onChange={(e) => setInstutionName(e.target.value)}
+              />
+            </div>
+            <div style={{ marginLeft: "50px", marginTop: "50px" }}>
+              <TextField
+                fullWidth
+                id="outlined-basic"
+                label="Instution Type"
+                size="normal"
+                type="text"
+                placeholder=""
+                value={instutionType}
+                onChange={(e) => setInstutionType(e.target.value)}
+              />
+            </div>
+            <div style={{ marginLeft: "50px", marginTop: "50px" }}>
+              {" "}
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={titles}
+                getOptionLabel={(title, id) => title.name}
+                sx={{ minWidth: 120 }}
+                onChange={onTitleTagsChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Person Title"
+                    value={selectedTitle}
+                  />
+                )}
+              />
+            </div>
+            <div></div>
+            <div style={{ marginLeft: "50px", marginTop: "50px" }}>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={positions}
+                getOptionLabel={(option) => option.name}
+                sx={{ minWidth: 120 }}
+                onChange={onPositionTagsChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Position"
+                    value={selectedPosition}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
+          <div>
+            {isCalculated ? (
+              <div style={{ marginTop: "60px", marginLeft: "47%" }}>
+                <h3>Usage Duration : {usageDuration}</h3>
+              </div>
+            ) : (
+              <></>
+            )}{" "}
+            <button
+              type="submit"
+              style={{
+                color: "white",
+                backgroundColor: "green",
+                padding: "10px",
+                fontSize: "large",
+                fontWeight: "bold",
+                border: "1px solid white",
+                borderRadius: "7px",
+                width: "100px",
+                marginTop: "60px",
+                marginLeft: "50%",
+              }}
+              onClick={handleAdd}
+            >
+              Save
+            </button>
+            <button
+              type="submit"
+              style={{
+                color: "white",
+                backgroundColor: "red",
+                padding: "10px",
+                fontSize: "large",
+                fontWeight: "bold",
+                border: "1px solid white",
+                borderRadius: "7px",
+                width: "100px",
+                marginTop: "20px",
+                marginLeft: "50%",
+              }}
+            >
+              <Link
+                to="/logs"
+                style={{ textDecoration: "none", color: "white" }}
+              >
+                Cancel
+              </Link>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

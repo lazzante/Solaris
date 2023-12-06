@@ -8,8 +8,22 @@ import { useTheme } from "@mui/material/styles";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import CantAccess from "../Error/CantAccess";
+
 
 const NewLabratory = ({ title }) => {
+   //GİRİŞ YAPINCA AUTHORİTY KONTROL
+   const [hasAuthority, setHasAuthority] = useState();
+
+
+   const userRoles = useSelector(
+    (state) => state.detailSetter.value.authorities
+  );
+  let roleNames;
+
+
   const [name, setName] = useState("");
   const [building, setBuilding] = useState("");
 
@@ -23,6 +37,15 @@ const NewLabratory = ({ title }) => {
   const theme = useTheme();
 
   useEffect(() => {
+    if (userRoles !== undefined) {
+      console.log(userRoles);
+      roleNames = userRoles.map((role) => role.name);
+      userRoles.map((role) => {
+        role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
+      });
+    } else {
+      setHasAuthority(false);
+    }
     getDivisions();
   }, []);
 
@@ -65,36 +88,48 @@ const NewLabratory = ({ title }) => {
     <div className="new">
       <Sidebar />
       <div className="newContainer">
-        {/* <Navbar /> */}
-        
-          <h2>Add New Laboratories</h2>
-       
-        <div className="bottom">
-          <div className="right">
-            <form onSubmit={handleAdd}>
-              <div className="formInput">
-                <label>Name</label>
-                <input
-                  id="name"
-                  type="text"
-                  placeholder=""
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="formInput">
-                <label>Building</label>
-                <input
-                  id="bina"
+
+        {hasAuthority?(<div>
+        <h2 style={{ textAlign: "center", color: "green" }}>New Laboratory</h2>
+        <form onSubmit={handleAdd}>
+
+        <div
+          style={{
+            // display: "grid",
+            // gridTemplateColumns: "auto  ",
+            display: "flex",
+            padding: "10px",
+            marginTop: "60px",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        >
+          <div style={{ padding: "10px", textAlign: "center" }}>
+            <TextField
+              fullWidth
+              id="outlined-uncontrolled"
+              label="Laboratory Name"
+              size="medium"
+              type="text"
+              placeholder=""
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+          <div style={{ padding: "10px", textAlign: "center" }}>
+          <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Building"
+                  size="medium"
                   type="text"
                   placeholder=""
                   value={building}
                   onChange={(e) => setBuilding(e.target.value)}
                 />
-              </div>
-
-              <div className="formInput">
-                <Autocomplete
+          </div>
+          <div style={{ padding: "10px", textAlign: "center",width:"195px" }}>
+          <Autocomplete
                   disablePortal
                   id="combo-box-demo"
                   options={divisions}
@@ -109,19 +144,22 @@ const NewLabratory = ({ title }) => {
                     />
                   )}
                 />
-              </div>
-              <div className="formInput">
-                <button
-                  type="submit"
-                  className="saveButton"
-                  onClick={handleAdd}
-                >
-                  Save
-                </button>
-              </div>
-            </form>
           </div>
+          <button type="button" style={{color:"white",backgroundColor:"green",padding:"10px",fontSize:"large",fontWeight:"bold",border:"1px solid white",borderRadius:"7px",width:"100px",marginTop:"50px"}} 
+            onClick={e=>handleAdd(e)}>
+            Save
+            </button>
+            <br/>
+            <button type="button" style={{color:"white",backgroundColor:"red",padding:"10px",fontSize:"large",fontWeight:"bold",border:"1px solid white",borderRadius:"7px",width:"100px"}} onClick={()=>{
+            }}>
+             <Link to="/laboratories" style={{ textDecoration: "none",color:"white" }}>Cancel</Link>
+            </button>
         </div>
+        </form>
+        </div>):(<CantAccess/>)}
+
+
+
       </div>
     </div>
   );

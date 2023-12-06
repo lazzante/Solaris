@@ -19,9 +19,29 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useSelector } from "react-redux";
+import CantAccess from "../Error/CantAccess";
 
 const EquipmentAuth = () => {
+   //GİRİŞ YAPINCA AUTHORİTY KONTROL
+   const [hasAuthority, setHasAuthority] = useState();
+
+   const userRoles = useSelector(
+     (state) => state.detailSetter.value.authorities
+   );
+   let roleNames;
+
+
   useEffect(() => {
+    if (userRoles !== undefined) {
+      console.log(userRoles);
+      roleNames = userRoles.map((role) => role.name);
+      userRoles.map((role) => {
+        role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
+      });
+    } else {
+      setHasAuthority(false);
+    }
     getAllEqUsers();
   }, []);
 
@@ -29,7 +49,10 @@ const EquipmentAuth = () => {
     const getAllUsers = await axios
       .get(`http://localhost:8080/equser/getAll`)
       .then((response) => {
-        setEquipmentUsers(response.data);
+        if (response?.data) {
+          console.log(response.data);
+          setEquipmentUsers(response.data);
+        }
       })
       .catch((err) => console.log(err));
   };
@@ -479,6 +502,7 @@ const EquipmentAuth = () => {
             <div className="dataTable">
               <div className="datatableTitle">
                 <h2>Equipment Authorization</h2>
+              {hasAuthority?(
                 <div
                   className="link"
                   onClick={(e) => {
@@ -489,13 +513,14 @@ const EquipmentAuth = () => {
                     getDivisions();
                   }}
                 >
-                  Assign Equipment Authority
-                </div>
+                  Add Equipment Authority
+                </div>):(<></>)}
+
               </div>
               <Stack spacing={2} sx={{ width: "100%" }}>
                 <Box sx={{ height: 300, width: "100%" }}>
                   {message && <Alert severity="info">{message}</Alert>}
-                  <div>
+                  {hasAuthority?(<div>
                     <Dialog
                       open={open}
                       onClose={handleClose}
@@ -522,9 +547,12 @@ const EquipmentAuth = () => {
                         </DialogActions>
                       )}
                     </Dialog>
-                  </div>
+                  </div>):(<></>)}
+
+
+
                   <DataGrid
-                  sx={{ height: "900px" }}
+                    sx={{ height: "900px" }}
                     onRowClick={handleRowClick}
                     //onProcessRowUpdateStart={}
                     className="datagrid"
@@ -564,11 +592,15 @@ const EquipmentAuth = () => {
         <div className="list">
           <Sidebar />
           <div className="listContainer">
-            <Navbar />
+            {/* <Navbar /> */}
+            {hasAuthority?(
             <div className="dataTable">
-              <div className="datatableTitle">
-                <h2 style={{fontSize:" 24px"}}>Assign Equipment Authority</h2>
-                <div
+             
+             <div>
+                <h2 style={{ textAlign: "center", color: "green" }}>
+                  New Equipment Authority
+                </h2>
+                {/* <div
                   className="link"
                   onClick={(e) => {
                     e.preventDefault();
@@ -577,122 +609,199 @@ const EquipmentAuth = () => {
                   style={{ color: "red", borderColor: "red" }}
                 >
                   Back
-                </div>
+                </div> */}
               </div>
 
               {/*-------------------------------------BURASI İTİBARİYLE ADD EKRANI----------------------------------------*/}
 
               <div className="new">
                 <div className="newContainer">
-                  <div className="bottom">
-                    <div className="right">
-                      <form onSubmit={handleAdd}>
-                        <div className="formInput">
-                          <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={divisions}
-                            getOptionLabel={(division) => division.name}
-                            sx={{ minWidth: 120 }}
-                            onChange={onDivisionChange}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Division"
-                                value={selectedDivision}
-                              />
-                            )}
-                          />
-                        </div>
-                        <div className="formInput">
-                          <Autocomplete
-                            id="combo-box-demo"
-                            options={equipments}
-                            getOptionLabel={(option) => option.name}
-                            sx={{ minWidth: 120 }}
-                            onChange={onEqChange}
-                            disableClearable
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Equipment"
-                                value={selectedEq}
-                              />
-                            )}
-                          />
-                        </div>
-                        <div className="formInput">
-                          <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={users}
-                            getOptionLabel={(option) =>
-                              option.firstname +
-                              " " +
-                              option.lastname +
-                              " <-> " +
-                              option.email
-                            }
-                            sx={{ minWidth: 120 }}
-                            onChange={onUserChange}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="User"
-                                value={selectedUser}
-                              />
-                            )}
-                          />
-                        </div>
-                        <div className="formInput">
-                          <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={userTypes}
-                            sx={{ minWidth: 120 }}
-                            onChange={onUserTypeChange}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="User Type"
-                                value={selectedUserType}
-                              />
-                            )}
-                          />
-                        </div>
-
-                        <div className="formInput">
-                          <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={status}
-                            sx={{ minWidth: 120 }}
-                            onChange={onStatusChange}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Status"
-                                value={selectedStatus}
-                              />
-                            )}
-                          />
-                        </div>
-
-                        <div className="formInput">
-                          <button
-                            type="submit"
-                            className="saveButton"
-                            onClick={handleAdd}
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </form>
+                  <form onSubmit={handleAdd}>
+                    <div
+                      style={{
+                        // display: "grid",
+                        // gridTemplateColumns: "auto  ",
+                        display: "flex",
+                        padding: "10px",
+                        marginTop: "50px",
+                        alignItems: "center",
+                        flexDirection: "column",
+                        marginLeft: "90px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          padding: "10px",
+                          textAlign: "center",
+                          width: "250px",
+                        }}
+                      >
+                        {" "}
+                        <Autocomplete
+                          disablePortal
+                          id="combo-box-demo"
+                          options={divisions}
+                          getOptionLabel={(division) => division.name}
+                          sx={{ minWidth: 120 }}
+                          onChange={onDivisionChange}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Division"
+                              value={selectedDivision}
+                            />
+                          )}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          padding: "10px",
+                          textAlign: "center",
+                          width: "250px",
+                          marginTop: "20px",
+                        }}
+                      >
+                        {" "}
+                        <Autocomplete
+                          id="combo-box-demo"
+                          options={equipments}
+                          getOptionLabel={(option) => option.name}
+                          sx={{ minWidth: 120 }}
+                          onChange={onEqChange}
+                          disableClearable
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Equipment"
+                              value={selectedEq}
+                            />
+                          )}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          padding: "10px",
+                          textAlign: "center",
+                          width: "250px",
+                          marginTop: "20px",
+                        }}
+                      >
+                        {" "}
+                        <Autocomplete
+                          disablePortal
+                          id="combo-box-demo"
+                          options={users}
+                          getOptionLabel={(option) =>
+                            option.firstname +
+                            " " +
+                            option.lastname +
+                            " <-> " +
+                            option.email
+                          }
+                          sx={{ minWidth: 120 }}
+                          onChange={onUserChange}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="User"
+                              value={selectedUser}
+                            />
+                          )}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          padding: "10px",
+                          textAlign: "center",
+                          width: "250px",
+                          marginTop: "20px",
+                        }}
+                      >
+                        {" "}
+                        <Autocomplete
+                          disablePortal
+                          id="combo-box-demo"
+                          options={userTypes}
+                          sx={{ minWidth: 120 }}
+                          onChange={onUserTypeChange}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="User Type"
+                              value={selectedUserType}
+                            />
+                          )}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          padding: "10px",
+                          textAlign: "center",
+                          width: "250px",
+                          marginTop: "20px",
+                        }}
+                      >
+                        {" "}
+                        <Autocomplete
+                          disablePortal
+                          id="combo-box-demo"
+                          options={status}
+                          sx={{ minWidth: 120 }}
+                          onChange={onStatusChange}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Status"
+                              value={selectedStatus}
+                            />
+                          )}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        style={{
+                          color: "white",
+                          backgroundColor: "green",
+                          padding: "10px",
+                          fontSize: "large",
+                          fontWeight: "bold",
+                          border: "1px solid white",
+                          borderRadius: "7px",
+                          width: "100px",
+                          marginTop:"20px"
+                        }}
+                        onClick={(e) => handleAdd(e)}
+                      >
+                        Save
+                      </button>
+                      <br />
+                      <button
+                        type="button"
+                        style={{
+                          color: "white",
+                          backgroundColor: "red",
+                          padding: "10px",
+                          fontSize: "large",
+                          fontWeight: "bold",
+                          border: "1px solid white",
+                          borderRadius: "7px",
+                          width: "100px",
+                        }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setAddNew(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
                     </div>
-                  </div>
+                  </form>
                 </div>
               </div>
-            </div>
+
+
+            </div>):(<CantAccess/>)}
+
           </div>
         </div>
       </div>

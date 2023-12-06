@@ -1,0 +1,202 @@
+ <form onSubmit={handleAdd}>
+            <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Equipment Name"
+                  size="medium"
+                  type="text"
+                  placeholder=""
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+          
+              <div className="formInput">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      format="DD-MM-YYYY"
+                      label="Procurement Date"
+                      defaultValue={Date.now() || null}
+                      value={null}
+                      onChange={(value) => onProcurementDateChange(value)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+
+              <div >
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">
+                    Procurement Source
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={selectedProcurementSource}
+                    label="Procurement Source"
+                    onChange={(e) =>
+                      setSelectedProcurementSource(e.target.value)
+                    }
+                  >
+                    <MenuItem value={"Kamu Kaynaklı Destek"}>
+                      Kamu Kaynaklı Destek
+                    </MenuItem>
+                    <MenuItem value="Özel Sektör/STK Desteği">
+                      Özel Sektör/STK Desteği
+                    </MenuItem>
+                    <MenuItem value="Hibe">Hibe</MenuItem>
+                    <MenuItem value="Diğer">Diğer</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Funding Source"
+                  size="medium"
+                  type="text"
+                  placeholder=""
+                  value={fundingSource}
+                  onChange={(e) => setFundingSource(e.target.value)}
+                />
+              </div>
+
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Funding Amount"
+                  size="medium"
+                  type="text"
+                  placeholder=""
+                  value={fundingAmount}
+                  onChange={(e) => setFundingAmount(e.target.value)}
+                />
+              </div>
+
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Manyfacturer"
+                  size="medium"
+                  type="text"
+                  placeholder=""
+                  value={manyfacturer}
+                  onChange={(e) => setManyfacturer(e.target.value)}
+                />
+              </div>
+             
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Equipment Identifier"
+                  size="medium"
+                  type="text"
+                  placeholder=""
+                  value={equipmentIdentifier}
+                  onChange={(e) => setEquipmentIdentifier(e.target.value)}
+                />
+              </div>
+
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Equipment Alt Name"
+                  size="medium"
+                  type="text"
+                  placeholder=""
+                  value={equipmentAltName}
+                  onChange={(e) => setEquipmentAltName(e.target.value)}
+                />
+              </div>
+
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Equipment Eng Name"
+                  size="medium"
+                  type="text"
+                  placeholder=""
+                  value={equipmentEngName}
+                  onChange={(e) => setEquipmentEngName(e.target.value)}
+                />
+              </div>
+
+             
+
+          
+
+              <div className="formInput">
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">
+                    For External Usage
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={forExternalUsage}
+                    label="For External Usage"
+                    onChange={(e) => setForExternalUsage(e.target.value)}
+                  >
+                    <MenuItem value={true}>Yes</MenuItem>
+                    <MenuItem value={false}>No</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+
+              <div className="formInput">
+                <Stack spacing={3} sx={{ minWidth: 120 }}>
+                  <Autocomplete
+                    multiple
+                    id="tags-outlined"
+                    options={labratories}
+                    getOptionLabel={(option) => option.name}
+                    filterSelectedOptions
+                    onChange={onLabratoriesTagsChange}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select Labratories"
+                        placeholder="Favorites"
+                      />
+                    )}
+                  />
+                </Stack>
+              </div>
+
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={divisions}
+                  getOptionLabel={(option) => option.name}
+                  sx={{ minWidth: 120 }}
+                  onChange={onDivisionTagsChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Division"
+                      value={selectedDivision}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="formInput">
+                <button
+                  type="submit"
+                  className="saveButton"
+                  onClick={handleAdd}
+                >
+                  Save
+                </button>
+              </div>
+            </form>

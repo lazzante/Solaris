@@ -1,5 +1,5 @@
 export const userColums = [
-  { field: "uid", headerName: "UID", width: 100 },
+  { field: "uid", headerName: "UID", width: 100, },
   { field: "firstname", headerName: "First Name", width: 150 },
   { field: "lastname", headerName: "Last Name", width: 150 },
   { field: "email", headerName: "Email", width: 100 },

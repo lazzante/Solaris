@@ -1,0 +1,56 @@
+ <form onSubmit={handleAdd}>
+            <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Laboratory Name"
+                  size="medium"
+                  type="text"
+                  placeholder=""
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Building"
+                  size="medium"
+                  type="text"
+                  placeholder=""
+                  value={building}
+                  onChange={(e) => setBuilding(e.target.value)}
+                />
+              </div>
+             
+             
+
+              <div className="formInput">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={divisions}
+                  getOptionLabel={(option) => option.name}
+                  sx={{ minWidth: 120 }}
+                  onChange={onDivisionTagsChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Division"
+                      value={selectedDivision}
+                    />
+                  )}
+                />
+              </div>
+              <div className="formInput">
+                <button
+                  type="submit"
+                  className="saveButton"
+                  onClick={handleAdd}
+                >
+                  Save
+                </button>
+              </div>
+            </form>

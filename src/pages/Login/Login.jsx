@@ -52,7 +52,6 @@ const Login = () => {
           //REDUX
           if (details.data.authorities) {
             dispatch1(detailSetter(details.data));
-            console.log("Giriyormu aceb");
           } else {
             dispatch1(detailSetter(""));
           }

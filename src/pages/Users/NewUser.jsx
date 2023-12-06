@@ -9,10 +9,30 @@ import { useTheme } from "@mui/material/styles";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import CantAccess from "../Error/CantAccess";
+
 
 export default function NewUser({ inputs, title }) {
+//GİRİŞ YAPINCA AUTHORİTY KONTROL
+const [hasAuthority, setHasAuthority] = useState();
+
+const userRoles = useSelector(
+  (state) => state.detailSetter.value.authorities
+);
+let roleNames;
+
+
   const [data, setData] = useState({});
+
   //SELECT AREAS
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [email, setEmail] = useState("");
+
   const [selectedRole, setSelectedRole] = useState([]);
   const [selectedTitle, setSelectedTitle] = useState([{}]);
   const [selectedPosition, setSelectedPosition] = useState([]);
@@ -29,11 +49,21 @@ export default function NewUser({ inputs, title }) {
   const theme = useTheme();
 
   useEffect(() => {
+    if (userRoles !== undefined) {
+      console.log(userRoles);
+      roleNames = userRoles.map((role) => role.name);
+      userRoles.map((role) => {
+        role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
+      });
     getRoles();
     getTitles();
     getDivisions();
     getPositions();
     getEquipments();
+    } else {
+      setHasAuthority(false);
+    }
+    
   }, []);
 
   const getRoles = async () => {
@@ -92,19 +122,19 @@ export default function NewUser({ inputs, title }) {
     try {
       const res = await createUserWithEmailAndPassword(
         auth,
-        data.email,
-        data.password
+        email,
+        password
       );
       console.log("USER SAVED IN FİREBASE NEXT STEP IS DB");
 
       //AXIOS
       const axRes = await axios
         .post(`http://localhost:8080/signUp`, {
-          username: data.username,
-          password: data.password,
-          email: data.email,
-          firstname: data.firstname,
-          lastname: data.lastname,
+          username: username,
+          password: password,
+          email: email,
+          firstname: firstname,
+          lastname: lastname,
           uid: res.user.uid,
           authorities: selectedRole.map((role) => ({
             name: role.name,
@@ -132,10 +162,10 @@ export default function NewUser({ inputs, title }) {
               short_name: selectedDivision.short_name,
             },
           ],
-          equipments: selectedEquipments.map((eq) => ({
-            id: eq.id,
-            name: eq.name,
-          })),
+          // equipments: selectedEquipments.map((eq) => ({
+          //   id: eq.id,
+          //   name: eq.name,
+          // })),
         })
         .then((res) => {
           console.log("Başarılı bir şekilde tamamlandı");
@@ -151,10 +181,10 @@ export default function NewUser({ inputs, title }) {
     }
   };
 
-  const onEquipmentsChange = (event, values) => {
-    setSelectedEquipments(values);
-    console.log("SELECTED EQUIPMENTS (onEqChange incoming value): ", values);
-  };
+  // const onEquipmentsChange = (event, values) => {
+  //   setSelectedEquipments(values);
+  //   console.log("SELECTED EQUIPMENTS (onEqChange incoming value): ", values);
+  // };
   const onTagsChange = (event, values) => {
     setSelectedRole(values);
   };
@@ -173,128 +203,156 @@ export default function NewUser({ inputs, title }) {
   return (
     <div className="new">
       <Sidebar />
+     
       <div className="newContainer">
         {/* <Navbar /> */}
-        
-          <h2>Add New User</h2>
-        
-        <div className="bottom">
-          <div className="right">
-            <form onSubmit={handleAdd}>
-              {inputs.map((input) => (
-                <div className="formInput" key={inputs.id}>
-                  <label>{input.label}</label>
-                  <input
-                    id={input.id}
-                    type={input.type}
-                    placeholder={input.placeholder}
-                    onChange={handleInput}
-                  />
-                </div>
-              ))}
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={titles}
-                  getOptionLabel={(title, id) => title.name}
-                  sx={{ minWidth: 120 }}
-                  onChange={onTitleTagsChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Title"
-                      value={selectedTitle}
-                    />
-                  )}
-                />
-              </div>
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={positions}
-                  getOptionLabel={(option) => option.name}
-                  sx={{ minWidth: 120 }}
-                  onChange={onPositionTagsChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Position"
-                      value={selectedPosition}
-                    />
-                  )}
-                />
-              </div>
-              <div className="formInput">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={divisions}
-                  getOptionLabel={(option) => option.name}
-                  sx={{ minWidth: 120 }}
-                  onChange={onDivisionTagsChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Division"
-                      value={selectedDivision}
-                    />
-                  )}
-                />
-              </div>
-              <div className="formInput">
-                <Stack spacing={3} sx={{ minWidth: 120 }}>
-                  <Autocomplete
-                    multiple
-                    id="tags-outlined"
-                    options={roles}
-                    getOptionLabel={(option) => option.name}
-                    filterSelectedOptions
-                    onChange={onTagsChange}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Roles"
-                        placeholder="Favorites"
-                      />
-                    )}
-                  />
-                </Stack>
-              </div>
-              <div className="formInput">
-                <Stack spacing={3} sx={{ minWidth: 120 }}>
-                  <Autocomplete
-                    multiple
-                    id="tags-outlined"
-                    options={equipments}
-                    getOptionLabel={(option) => option.name}
-                    filterSelectedOptions
-                    onChange={onEquipmentsChange}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Equipments"
-                        placeholder="Equipments"
-                      />
-                    )}
-                  />
-                </Stack>
-              </div>
 
-              <div className="formInput">
-                <button
-                  type="submit"
-                  className="saveButton"
-                  onClick={handleAdd}
-                >
-                  Save
-                </button>
-              </div>
-            </form>
+        { hasAuthority ? 
+       (<div> <h2 style={{textAlign:"center",color:"green"}}>New User</h2>
+        <form onSubmit={handleAdd} style={{ width: "100%" }}>
+          {/* username: data.username,
+          password: data.password,
+          email: data.email,
+          firstname: data.firstname,
+          lastname: data.lastname, */}
+          <div
+            style={{
+              // display: "grid",
+              // gridTemplateColumns: "auto  ",
+              display: "flex",
+              padding: "10px",
+              marginTop: "50px",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <div style={{ padding: "10px", textAlign: "center" }}>
+              <TextField
+                placeholder="First Name"
+                value={firstname}
+                onChange={(e) => {
+                  setFirstname(e.target.value);
+                }}
+              />
+            </div>
+            <div style={{ padding: "10px", textAlign: "center" }}>
+              <TextField
+                placeholder="Last Name"
+                value={lastname}
+                onChange={(e) => {
+                  setLastname(e.target.value);
+                }}
+              />
+            </div>
+            <div style={{ padding: "10px", textAlign: "center" }}>
+              <TextField
+                placeholder="Username"
+                value={username}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                }}
+              />
+            </div>
+            <div style={{ padding: "10px", textAlign: "center" }}>
+              <TextField
+                placeholder="Email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+              />
+            </div>
+            <div style={{ padding: "10px", textAlign: "center" }}>
+              <TextField
+              type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
+            </div>
+
+            <div style={{ padding: "10px", textAlign: "center", width:"300px" }}>
+              <Stack spacing={3} sx={{ minWidth: 100 }}>
+                <Autocomplete
+                  multiple
+                  id="tags-outlined"
+                  options={roles}
+                  getOptionLabel={(option) => option.name}
+                  filterSelectedOptions
+                  onChange={onTagsChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Select Roles"
+                      placeholder="Favorites"
+                    />
+                  )}
+                />
+              </Stack>
+            </div>
+            <div style={{ padding: "20px", textAlign: "center", width:"300px" }}>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={titles}
+                getOptionLabel={(title, id) => title.name}
+                sx={{ minWidth: 120 }}
+                onChange={onTitleTagsChange}
+                renderInput={(params) => (
+                  <TextField {...params} label="Title" value={selectedTitle} />
+                )}
+              />
+            </div>
+            <div style={{ padding: "20px", textAlign: "center", width:"300px" }}>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={positions}
+                getOptionLabel={(option) => option.name}
+                sx={{ minWidth: 120 }}
+                onChange={onPositionTagsChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Position"
+                    value={selectedPosition}
+                  />
+                )}
+              />
+            </div>
+            <div style={{ padding: "20px", textAlign: "center", width:"300px" }}>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={divisions}
+                getOptionLabel={(option) => option.name}
+                sx={{ minWidth: 120 }}
+                onChange={onDivisionTagsChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Division"
+                    value={selectedDivision}
+                  />
+                )}
+              />
+            </div>
+            <button type="button" style={{color:"white",backgroundColor:"green",padding:"10px",fontSize:"large",fontWeight:"bold",border:"1px solid white",borderRadius:"7px",width:"100px"}} 
+            onClick={e=>handleAdd(e)}>
+            Save
+            </button>
+            <br/>
+            <button type="button" style={{color:"white",backgroundColor:"red",padding:"10px",fontSize:"large",fontWeight:"bold",border:"1px solid white",borderRadius:"7px",width:"100px"}} onClick={()=>{
+            }}>
+             <Link to="/users" style={{ textDecoration: "none",color:"white" }}>Cancel</Link>
+            </button>
           </div>
-        </div>
+        </form>
+        </div>) :(<CantAccess/>)}
       </div>
+     
     </div>
   );
 }

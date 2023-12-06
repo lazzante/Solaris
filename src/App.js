@@ -31,6 +31,7 @@ import Labratories from "./pages/Labratories/Labratories";
 import NewLabratory from "./pages/Labratories/NewLabratory";
 import EquipmentAuth from "./pages/EqAuth/EquipmentAuth";
 import Projects from "./pages/Projects/Projects";
+import NewProject from "./pages/Projects/NewProject";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -99,14 +100,7 @@ function App() {
                 }
               />
               //SINGLE
-              <Route
-                path=":productId"
-                element={
-                  <RequireAuth>
-                    <Single inputs={userInputs} />
-                  </RequireAuth>
-                }
-              />
+             
             </Route>
             <Route
               path="chat"
@@ -195,10 +189,10 @@ function App() {
               }
             />
           </Route>
-          <Route path="labratories">
+          <Route path="laboratories">
             <Route index element={<Labratories />} />
             <Route
-              path="newLabratory"
+              path="newLaboratory"
               element={
                 <RequireAuth>
                   <NewLabratory title="Add New Labratory" />
@@ -212,7 +206,7 @@ function App() {
           </Route>
           <Route path="projects">
             <Route index element={<Projects />} />
-            <Route path="" element={<RequireAuth></RequireAuth>} />
+            <Route path="newProject" element={<RequireAuth><NewProject/></RequireAuth>} />
           </Route>
         </Routes>
       </BrowserRouter>

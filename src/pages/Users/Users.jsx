@@ -19,7 +19,7 @@ const Users = () => {
   const [titleData, setTitleData] = useState([]);
   const [divisionData, setDivisionData] = useState([]);
   const [positionData, setPositionData] = useState([]);
-  const [authorityData, setAuthority] = useState([]);
+  const [authority, setAuthority] = useState([]);
   const [equipmentData, setEquipmentData] = useState([]);
 
   //SAYFAYA GİRİŞ YETKİSİ VARMI KONTROL EDEN USESTATE
@@ -35,12 +35,13 @@ const Users = () => {
 
   useEffect(() => {
     if (userRoles !== undefined) {
+      console.log(userRoles);
       roleNames = userRoles.map((role) => role.name);
       userRoles.map((role) => {
         role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
       });
     } else {
-      setAuthority(false);
+      setHasAuthority(false);
     }
 
     const fetchData = async () => {
@@ -48,8 +49,10 @@ const Users = () => {
       const getAllUsers = await axios
         .get(`http://localhost:8080/user/getAll`)
         .then((response) => {
+          if(response?.data){
           setData(response.data);
           setAuthority(response.data.authorities);
+          }
         })
         .catch((err) => console.log(err));
     };
@@ -147,15 +150,15 @@ const Users = () => {
       width: 100,
       renderHeader: () => <strong>{"Authorities "}</strong>,
     },
-    {
-      field: `equipments`,
-      valueGetter: (params) => {
-        return `${params.row.equipments.map((eq) => eq.name)}`;
-      },
-      headerName: "Equipments",
-      width: 100,
-      renderHeader: () => <strong>{"Equipments "}</strong>,
-    },
+    // {
+    //   field: `equipments`,
+    //   valueGetter: (params) => {
+    //     return `${params.row.equipments.map((eq) => eq.name)}`;
+    //   },
+    //   headerName: "Equipments",
+    //   width: 100,
+    //   renderHeader: () => <strong>{"Equipments "}</strong>,
+    // },
   ];
 
   const actionColumn = {
@@ -218,7 +221,7 @@ const Users = () => {
             getRowId={(row: any) => generateRandom()}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
+                paginationModel: { page: 0, pageSize: 25 },
               },
             }}
             pageSizeOptions={[5, 10]}

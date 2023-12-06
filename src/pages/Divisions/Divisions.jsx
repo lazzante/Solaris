@@ -7,17 +7,41 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { useSelector } from "react-redux";
+import CantAccess from "../Error/CantAccess";
 
 const Divisions = () => {
+   
+ //GİRİŞ YAPINCA AUTHORİTY KONTROL
+ const [hasAuthority, setHasAuthority] = useState();
+
+ const userRoles = useSelector(
+   (state) => state.detailSetter.value.authorities
+ );
+ let roleNames;
+
+
   const [divisionsData, setDivisionsData] = useState([]);
 
   useEffect(() => {
+    if (userRoles !== undefined) {
+      console.log(userRoles);
+      roleNames = userRoles.map((role) => role.name);
+      userRoles.map((role) => {
+        role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
+      });
+    } else {
+      setHasAuthority(false);
+    }
     const fetchData = async () => {
       let list = [];
       const getAllDivisions = await axios
         .get(`http://localhost:8080/division/getAll`)
         .then((response) => {
-          setDivisionsData(response.data);
+          if(response?.data){
+            setDivisionsData(response.data);
+
+          }
         })
         .catch((err) => console.log(err));
     };
@@ -71,7 +95,9 @@ const Divisions = () => {
     <div className="list">
       <Sidebar />
       <div className="listContainer">
-        {/* <Navbar /> */}
+        
+
+{hasAuthority ?(
         <div className="dataTable">
           <div className="datatableTitle">
             <h2>Divisions</h2>
@@ -93,7 +119,9 @@ const Divisions = () => {
             pageSizeOptions={[5, 10]}
             checkboxSelection
           />
-        </div>
+        </div>):(<CantAccess/>)}
+
+
       </div>
     </div>
   );

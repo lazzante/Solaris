@@ -9,17 +9,25 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { GridToolbarExport } from "@mui/x-data-grid";
 
 const Logs = () => {
+
+  
+
+
   const [logsData, setLogsData] = useState([]);
+  
 
   let allLogs;
 
   //LIST ALL OPERATION WHEN PAGE OPEN
   useEffect(() => {
-    const fetchData = async () => {
-      const getAllLogs = await axios
+
+    const fetchData =  () => {
+      const getAllLogs =  axios
         .get(`http://localhost:8080/log/getAll`)
         .then((response) => {
-          setLogsData(response.data);
+          if(response?.data){
+            setLogsData(response.data);
+          }
         })
         .catch((err) => console.log(err));
     };
@@ -41,7 +49,7 @@ log/delete/${id}`);
   const actionColumn = {
     field: "action",
     headerName: "Action",
-    width: 200,
+    width: 75,
     renderHeader: () => <strong>{"Action "}</strong>,
     renderCell: (params) => {
       return (
@@ -76,9 +84,12 @@ log/delete/${id}`);
         return `${params.row.equipments.map((eq) => eq.name)}`;
       },
       headerName: "Equipments",
-      width: 100,
+      width: 250,
       renderHeader: () => <strong>{"Equipments "}</strong>,
     },
+    { field: "projectUser", headerName: "User", width: 200,renderHeader: () => <strong>{"User "}</strong>, },
+
+
     {
       field: `divisions`,
       valueGetter: (params) => {
@@ -90,7 +101,6 @@ log/delete/${id}`);
     },
     { field: "date", headerName: "Date", width: 75,renderHeader: () => <strong>{"Date "}</strong>, },
     { field: "operation", headerName: "Operation", width: 75,renderHeader: () => <strong>{"Operation "}</strong>, },
-    { field: "projectUser", headerName: "User", width: 100,renderHeader: () => <strong>{"User "}</strong>, },
     {
       field: "purposeOfOperation",
       headerName: "Purpose Of Operation",
@@ -102,7 +112,6 @@ log/delete/${id}`);
     { field: "usageMode", headerName: "Usage Mode", width: 100,renderHeader: () => <strong>{"Usage Mode "}</strong>, },
     { field: "instutionName", headerName: "Instution Name", width: 150,renderHeader: () => <strong>{"Instution Name "}</strong>, },
     { field: "instutionType", headerName: "Instution Type", width: 150,renderHeader: () => <strong>{"Instution Type "}</strong>, },
-    { field: "personName", headerName: "Person Name", width: 100,renderHeader: () => <strong>{"Person Name "}</strong>, },
     {
       field: `personTitles`,
       valueGetter: (params) => {

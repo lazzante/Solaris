@@ -6,19 +6,43 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { useSelector } from "react-redux";
+import CantAccess from "../Error/CantAccess";
 
 const Labratories = () => {
+   //GİRİŞ YAPINCA AUTHORİTY KONTROL
+   const [hasAuthority, setHasAuthority] = useState();
+
+
+   const userRoles = useSelector(
+    (state) => state.detailSetter.value.authorities
+  );
+  let roleNames;
+
+
   const [labratoryData, setLabratoryData] = useState([]);
 
   let allLabratories;
 
   //LIST ALL OPERATION WHEN PAGE OPEN
   useEffect(() => {
+    if (userRoles !== undefined) {
+      console.log(userRoles);
+      roleNames = userRoles.map((role) => role.name);
+      userRoles.map((role) => {
+        role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
+      });
+    } else {
+      setHasAuthority(false);
+    }
     const fetchData = async () => {
       const getAllLabratories = await axios
         .get(`http://localhost:8080/labratory/getAll`)
         .then((response) => {
-          setLabratoryData(response.data);
+          if(response?.data){
+            setLabratoryData(response.data);
+
+          }
         })
         .catch((err) => console.log(err));
     };
@@ -42,6 +66,7 @@ const Labratories = () => {
     field: "action",
     headerName: "Action",
     width: 200,
+    renderHeader: () => <strong>{"Action "}</strong>,
     renderCell: (params) => {
       return (
         <div className="cellAction">
@@ -70,8 +95,8 @@ const Labratories = () => {
 
   //TABLE COLUMNS
   const columns = [
-    { field: "name", headerName: "Name", width: 75 },
-    { field: "bina", headerName: "Building", width: 75 },
+    { field: "name", headerName: "Name", width: 200,renderHeader: () => <strong>{"Laboratory Name "}</strong>, },
+    { field: "bina", headerName: "Building", width: 150,renderHeader: () => <strong>{"Building "}</strong>, },
     {
       field: `labratoryDivisions`,
       valueGetter: (params) => {
@@ -79,6 +104,7 @@ const Labratories = () => {
       },
       headerName: "Divisions",
       width: 150,
+      renderHeader: () => <strong>{"Divisions"}</strong>,
     },
   ];
 
@@ -88,10 +114,12 @@ const Labratories = () => {
         <Sidebar />
         <div className="listContainer">
           {/* <Navbar /> */}
+
+          {hasAuthority ? (
           <div className="dataTable">
             <div className="datatableTitle">
               <h2>Laboratories</h2>
-              <Link to="/labratories/newLabratory" className="link">
+              <Link to="/laboratories/newLaboratory" className="link">
                 Add New
               </Link>
             </div>
@@ -109,7 +137,9 @@ const Labratories = () => {
               pageSizeOptions={[5, 10]}
               checkboxSelection
             />
-          </div>
+          </div>):(<CantAccess/>)}
+
+
         </div>
       </div>
     </div>

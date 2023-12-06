@@ -1,0 +1,33 @@
+ <div className="formInput">
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Role Name"
+                  size="medium"
+                  type="text"
+                  value={role}
+                  onChange={(e) => handleInput(e.target.value)}
+                />
+              </div>
+              {/* {roleInputs.map((input) => (
+                <div className="formInput" key={input.id}>
+                  <label>{input.label}</label>
+                  <input
+                    id={input.id}
+                    type={input.type}
+                    placeholder={input.placeholder}
+                    value={role}
+                    onChange={(e) => handleInput(e.target.value)}
+                  />
+                </div>
+              ))} */}
+
+              <div className="formInput">
+                <button
+                  type="submit"
+                  className="saveButton"
+                  onClick={handleAdd}
+                >
+                  Save
+                </button>
+              </div>

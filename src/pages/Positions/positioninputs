@@ -1,0 +1,40 @@
+ <form
+              onSubmit={(e) => {
+                handleAdd(e);
+              }}
+            >
+              <div className="formInput">
+                
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Position Name"
+                  size="medium"
+                  type="text"
+                  value={position}
+                  onChange={(e) => setPosition(e.target.value)}
+                />
+              </div>
+              <div className="formInput">
+              
+                <TextField
+                  fullWidth
+                  id="outlined-uncontrolled"
+                  label="Position Description"
+                  size="medium"
+                  type="text"
+                  value={positionDescription}
+                  onChange={(e) => setPositionDescription(e.target.value)}
+                />
+              </div>
+
+              <div className="formInput">
+                <button
+                  type="submit"
+                  className="saveButton"
+                  onClick={handleAdd}
+                >
+                  Save
+                </button>
+              </div>
+            </form>

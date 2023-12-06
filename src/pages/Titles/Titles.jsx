@@ -7,21 +7,42 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import axios from "axios";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { useSelector } from "react-redux";
+import CantAccess from "../Error/CantAccess";
 
 const Titles = () => {
+   //GİRİŞ YAPINCA AUTHORİTY KONTROL
+   const [hasAuthority, setHasAuthority] = useState();
+
+   const userRoles = useSelector(
+     (state) => state.detailSetter.value.authorities
+   );
+   let roleNames;
+
+
   const [titlesData, setTitlesData] = useState([]);
 
   let allTitles;
 
   useEffect(() => {
+    if (userRoles !== undefined) {
+      console.log(userRoles);
+      roleNames = userRoles.map((role) => role.name);
+      userRoles.map((role) => {
+        role.name === "ADMIN" ? setHasAuthority(true) : setHasAuthority(false);
+      });
+    } else {
+      setHasAuthority(false);
+    }
     const fetchData = async () => {
       let list = [];
       const getAllTitles = await axios
         .get(`http://localhost:8080/title/getAll`)
         .then((response) => {
+          if(response?.data){
           allTitles = response.data;
           setTitlesData(allTitles);
-          console.log(allTitles);
+         }
         })
         .catch((err) => console.log(err));
     };
@@ -73,7 +94,8 @@ const Titles = () => {
     <div className="list">
       <Sidebar />
       <div className="listContainer">
-        {/* <Navbar /> */}
+        
+{hasAuthority ? (
         <div className="dataTable">
           <div className="datatableTitle">
             <h2>Titles</h2>
@@ -95,7 +117,9 @@ const Titles = () => {
             pageSizeOptions={[5, 10]}
             checkboxSelection
           />
-        </div>
+        </div>):(<CantAccess/>)}
+
+
       </div>
     </div>
   );

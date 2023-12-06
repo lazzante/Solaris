@@ -1,0 +1,102 @@
+ <form onSubmit={handleAdd}>
+                        <div className="formInput">
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={divisions}
+                            getOptionLabel={(division) => division.name}
+                            sx={{ minWidth: 120 }}
+                            onChange={onDivisionChange}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Division"
+                                value={selectedDivision}
+                              />
+                            )}
+                          />
+                        </div>
+                        <div className="formInput">
+                          <Autocomplete
+                            id="combo-box-demo"
+                            options={equipments}
+                            getOptionLabel={(option) => option.name}
+                            sx={{ minWidth: 120 }}
+                            onChange={onEqChange}
+                            disableClearable
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Equipment"
+                                value={selectedEq}
+                              />
+                            )}
+                          />
+                        </div>
+                        <div className="formInput">
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={users}
+                            getOptionLabel={(option) =>
+                              option.firstname +
+                              " " +
+                              option.lastname +
+                              " <-> " +
+                              option.email
+                            }
+                            sx={{ minWidth: 120 }}
+                            onChange={onUserChange}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="User"
+                                value={selectedUser}
+                              />
+                            )}
+                          />
+                        </div>
+                        <div className="formInput">
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={userTypes}
+                            sx={{ minWidth: 120 }}
+                            onChange={onUserTypeChange}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="User Type"
+                                value={selectedUserType}
+                              />
+                            )}
+                          />
+                        </div>
+
+                        <div className="formInput">
+                          <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            options={status}
+                            sx={{ minWidth: 120 }}
+                            onChange={onStatusChange}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Status"
+                                value={selectedStatus}
+                              />
+                            )}
+                          />
+                        </div>
+
+                        <div className="formInput">
+                          <button
+                            type="submit"
+                            className="saveButton"
+                            onClick={handleAdd}
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </form>

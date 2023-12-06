@@ -51,7 +51,7 @@ const Sidebar = () => {
           </div>
         </Link>
       </div>
-      <hr />
+      {/* <hr /> */}
       <div className="center">
         <ul>
           <p className="title">MAIN</p>
@@ -67,18 +67,14 @@ const Sidebar = () => {
               <span>Logs</span>
             </li>
           </Link>
-          <Link to="/equipments" style={{ textDecoration: "none" }}>
+          <Link to="/equipmentAuth" style={{ textDecoration: "none" }}>
             <li>
-              <PrecisionManufacturingIcon className="icon" />
-              <span>Equipments</span>
+              <ManageAccountsIcon className="icon" />
+              <span>Equipment Authorization</span>
             </li>
           </Link>
-          <Link to="/labratories" style={{ textDecoration: "none" }}>
-            <li>
-              <BiotechIcon className="icon" />
-              <span>Laboratories</span>
-            </li>
-          </Link>
+          
+          
 
           <p className="title">ADMIN</p>
           <Link to="/users" style={{ textDecoration: "none" }}>
@@ -93,11 +89,18 @@ const Sidebar = () => {
               <span>Projects</span>
             </li>
           </Link>
-
-          <Link to="/equipmentAuth" style={{ textDecoration: "none" }}>
+          <Link to="/equipments" style={{ textDecoration: "none" }}>
             <li>
-              <ManageAccountsIcon className="icon" />
-              <span>Equipment Authorization</span>
+              <PrecisionManufacturingIcon className="icon" />
+              <span>Equipments</span>
+            </li>
+          </Link>
+
+         
+          <Link to="/laboratories" style={{ textDecoration: "none" }}>
+            <li>
+              <BiotechIcon className="icon" />
+              <span>Laboratories</span>
             </li>
           </Link>
 
@@ -126,17 +129,7 @@ const Sidebar = () => {
             </li>
           </Link>
 
-          <p className="title">SERVICE</p>
-
-          <li>
-            <HealthAndSafetyIcon className="icon" />
-            <span>System Health </span>
-          </li>
-
-          <li>
-            <SettingsIcon className="icon" />
-            <span>Settings</span>
-          </li>
+         
           <p className="title">USER</p>
 
           {/* <li>

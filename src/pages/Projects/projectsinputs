@@ -1,0 +1,84 @@
+ <form onSubmit={handleAdd}>
+                      <div className="formInput">
+                        <TextField
+                          fullWidth
+                          id="outlined-uncontrolled"
+                          label="Project Name"
+                          size="medium"
+                          type="text"
+                          value={projectName}
+                          onChange={(e) => setProjectName(e.target.value)}
+                        />
+                      </div>
+                      <div className="formInput">
+                        <TextField
+                          fullWidth
+                          id="outlined-uncontrolled"
+                          label="Project Type"
+                          size="medium"
+                          type="text"
+                          value={projectType}
+                          onChange={(e) => setProjectType(e.target.value)}
+                        />
+                      </div>
+                      <div className="formInput">
+                        <TextField
+                          fullWidth
+                          id="outlined-uncontrolled"
+                          label="Project Code"
+                          size="medium"
+                          type="text"
+                          value={projectCode}
+                          onChange={(e) => setProjectCode(e.target.value)}
+                        />
+                      </div>
+                      <div className="formInput">
+                        <TextField
+                          fullWidth
+                          id="outlined-uncontrolled"
+                          label="Project Coordinator"
+                          size="medium"
+                          type="text"
+                          value={projectCoordinator}
+                          onChange={(e) =>
+                            setProjectCoordinator(e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="specialInput">
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={["DatePicker"]}>
+                            <DatePicker
+                              format="DD-MM-YYYY"
+                              label="Start Date"
+                              defaultValue={Date.now() || null}
+                              value={null}
+                              onChange={(value) => onStartDateChange(value)}
+                            />
+                          </DemoContainer>
+                        </LocalizationProvider>
+                      </div>
+                      <div className="specialInput">
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={["DatePicker"]}>
+                            <DatePicker
+                              format="DD-MM-YYYY"
+                              label="End Date"
+                              defaultValue={Date.now() || null}
+                              value={null}
+                              onChange={(value) => onEndDateChange(value)}
+                            />
+                          </DemoContainer>
+                        </LocalizationProvider>
+                      </div>
+
+                      <div className="formInput">
+                        <button
+                          type="submit"
+                          className="saveButton"
+                          onClick={handleAdd}
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </form>
